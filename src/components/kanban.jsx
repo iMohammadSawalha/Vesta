@@ -1,55 +1,10 @@
-import IssueCard from "../components/issue";
-const Kanban = (props) => {
+import data from "../assets/testdata/issues.json";
+import IssueColumn from "./columns";
+const Kanban = () => {
   return (
     <>
       <div className="status-row">
-        <div className="status-col status-backlog bg-success">
-          <div className="status-col-title">
-            <span>Backlog</span>
-          </div>
-          <IssueCard />
-          <IssueCard />
-          <IssueCard />
-          <IssueCard />
-          <IssueCard />
-          <IssueCard />
-          <IssueCard />
-          <IssueCard />
-          <IssueCard />
-          <IssueCard />
-          <IssueCard />
-          <IssueCard />
-          <IssueCard />
-          <IssueCard />
-          <IssueCard />
-          <IssueCard />
-          <IssueCard />
-          <IssueCard />
-        </div>
-        <div className="status-col status-todo">
-          <div className="status-col-title">
-            <span>Todo</span>
-          </div>
-          <IssueCard />
-          <IssueCard />
-          <IssueCard />
-        </div>
-        <div className="status-col status-in-progress bg-success">
-          <div className="status-col-title">
-            <span>In Progress</span>
-          </div>
-          <IssueCard />
-          <IssueCard />
-          <IssueCard />
-        </div>
-        <div className="status-col status-done">
-          <div className="status-col-title">
-            <span>Done</span>
-          </div>
-          <IssueCard />
-          <IssueCard />
-          <IssueCard />
-        </div>
+        <IssueColumn data={data} />
       </div>
     </>
   );

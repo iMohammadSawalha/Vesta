@@ -1,0 +1,70 @@
+{
+  "backlog": [
+    {
+      "id": "LX-5",
+      "title": "Random Backlog Title 1",
+      "parent": "LB-1"
+    },
+    {
+      "id": "LX-11",
+      "title": "Random Backlog Title 2",
+      "parent": "LB-1"
+    },
+    {
+      "id": "LX-12",
+      "title": "Random Backlog Title 3",
+      "parent": ""
+    }
+  ],
+  "todo": [
+    {
+      "id": "LX-8",
+      "title": "Random Todo Title 1",
+      "parent": "LB-3"
+    },
+    {
+      "id": "LX-15",
+      "title": "Random Todo Title 2",
+      "parent": "LB-2"
+    },
+    {
+      "id": "LX-20",
+      "title": "Random Todo Title 3",
+      "parent": ""
+    }
+  ],
+  "inprogress": [
+    {
+      "id": "LX-17",
+      "title": "Random In Progress Title 1",
+      "parent": "LB-5"
+    },
+    {
+      "id": "LX-22",
+      "title": "Random In Progress Title 2",
+      "parent": "LB-4"
+    },
+    {
+      "id": "LX-30",
+      "title": "Random In Progress Title 3",
+      "parent": ""
+    }
+  ],
+  "done": [
+    {
+      "id": "LX-25",
+      "title": "Random Done Title 1",
+      "parent": "LB-7"
+    },
+    {
+      "id": "LX-33",
+      "title": "Random Done Title 2",
+      "parent": "LB-6"
+    },
+    {
+      "id": "LX-40",
+      "title": "Random Done Title 3",
+      "parent": ""
+    }
+  ]
+}

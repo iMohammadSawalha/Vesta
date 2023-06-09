@@ -1,15 +1,24 @@
 import { RightCheveron } from "./icons";
 
-function IssueCard() {
+function IssueCard(props) {
   return (
-    <div className="issue-card" draggable>
+    <div
+      className="issue-card"
+      ref={props.innerRef}
+      {...props.draggableProps}
+      {...props.dragHandleProps}
+    >
       <div className="issue-card-content">
-        <div>
-          <span>ID#</span>
-          <RightCheveron />
-          <span>parent issue</span>
+        <div className="issue-card-header">
+          <span>{props.id}</span>
+          {props.parent && (
+            <>
+              <RightCheveron />
+              <span>{props.parent}</span>
+            </>
+          )}
         </div>
-        <div>Issue Title</div>
+        <div className="issue-card-title">{props.title}</div>
       </div>
     </div>
   );

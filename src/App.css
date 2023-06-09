@@ -37,3 +37,13 @@
     background-color: rgb(5, 6, 45);
     color :white;
 }
+.issue-card-header{
+    font-size: 0.7rem;
+    color:rgba(148, 216, 228, 0.582);
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+.issue-card-title{
+    font-weight: 500;
+}
