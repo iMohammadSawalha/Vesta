@@ -10,6 +10,21 @@ const Kanban = (props) => {
           <IssueCard />
           <IssueCard />
           <IssueCard />
+          <IssueCard />
+          <IssueCard />
+          <IssueCard />
+          <IssueCard />
+          <IssueCard />
+          <IssueCard />
+          <IssueCard />
+          <IssueCard />
+          <IssueCard />
+          <IssueCard />
+          <IssueCard />
+          <IssueCard />
+          <IssueCard />
+          <IssueCard />
+          <IssueCard />
         </div>
         <div className="status-col status-todo">
           <div className="status-col-title">
