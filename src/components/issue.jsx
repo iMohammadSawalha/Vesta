@@ -1,19 +1,17 @@
-import Card from "react-bootstrap/Card";
 import { RightCheveron } from "./icons";
-import { useState } from "react";
 
 function IssueCard() {
   return (
-    <Card className="issue-card" draggable>
-      <Card.Body>
+    <div className="issue-card" draggable>
+      <div className="issue-card-content">
         <div>
           <span>ID#</span>
           <RightCheveron />
           <span>parent issue</span>
         </div>
         <div>Issue Title</div>
-      </Card.Body>
-    </Card>
+      </div>
+    </div>
   );
 }
 
