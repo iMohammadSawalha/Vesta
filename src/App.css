@@ -1,15 +1,17 @@
-.status-row{
+.issues-row-container{
     height: 100vh;
-    margin:0;
+    overflow-y: auto;
+}
+.status-row{
+    height: 100%;
     display: flex;
     overflow-y: hidden;
 }
 .status-col{
     height: 100%;
     min-width: 400px;
-    padding-left: 1rem;
-    padding-right: 1rem;
     overflow:scroll;
+    background-color: rgb(5, 6, 45);;
 }
 .status-col::-webkit-scrollbar{
     display: none;
@@ -21,6 +23,7 @@
     padding: 2px;
     box-shadow: rgba(151, 65, 252, 0.2) 0 15px 30px -5px;
     background-image: linear-gradient(144deg,#AF40FF, #5B42F3 50%,#00DDEB);
+    cursor: default !important;
 }
 .issue-card-content{
     background: rgb(5, 6, 45);
@@ -29,6 +32,7 @@
     height: 100%;
     color:white;
     padding: 1rem;
+    
 }
 .status-col-title{
     position: sticky;
@@ -36,6 +40,7 @@
     top: 0;
     background-color: rgb(5, 6, 45);
     color :white;
+    
 }
 .issue-card-header{
     font-size: 0.7rem;
@@ -46,4 +51,11 @@
 }
 .issue-card-title{
     font-weight: 500;
+}
+.column-placeholder{
+    height: fit-content;
+    min-height: calc(100% - 4rem);
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border-radius: 15px;
 }

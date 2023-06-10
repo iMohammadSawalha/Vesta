@@ -1,11 +1,9 @@
-import data from "../assets/testdata/issues.json";
+import data from "../assets/testdata/issues.js";
 import IssueColumn from "./columns";
 const Kanban = () => {
   return (
     <>
-      <div className="status-row">
-        <IssueColumn data={data} />
-      </div>
+      <IssueColumn data={data} />
     </>
   );
 };
