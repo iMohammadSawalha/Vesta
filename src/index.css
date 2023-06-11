@@ -2,5 +2,11 @@ html,
 body {
     margin: 0;
     height: 100vh;
-    scroll-behavior: unset !important;
+}
+@font-face {
+    font-family:Rubik;
+    src: url(./assets/fonts/rubik.ttf);
+}
+*{
+    font-family: Rubik;
 }

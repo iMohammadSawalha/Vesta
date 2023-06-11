@@ -35,9 +35,9 @@ const IssueColumn = ({ data }) => {
     });
   };
   return (
-    <div className="issues-row-container">
-      <div className="status-row">
-        <DragDropContext onDragEnd={handleOnDragEnd}>
+    <DragDropContext onDragEnd={handleOnDragEnd}>
+      <div className="issues-row-container">
+        <div className="status-row">
           {issues.columnsOrder.map((columnName) => (
             <div className="status-col" key={columnName}>
               <div className="status-col-title">
@@ -68,9 +68,9 @@ const IssueColumn = ({ data }) => {
               </Droppable>
             </div>
           ))}
-        </DragDropContext>
+        </div>
       </div>
-    </div>
+    </DragDropContext>
   );
 };
 export default IssueColumn;
