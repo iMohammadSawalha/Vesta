@@ -16,7 +16,7 @@ function IssueCard(props) {
               <span>{props.id}</span>
               {props.parent && (
                 <>
-                  <RightCheveron />
+                  <RightCheveron sx={{ fontSize: 16 }} />
                   <span>{props.parent}</span>
                 </>
               )}

@@ -68,6 +68,8 @@ const data = {
     },
   },
   columnsOrder: ["backlog", "todo", "inprogress", "done"],
+  idCounter: 50,
+  idSymbol: "LX",
 };
 
 export default data;
