@@ -1,6 +1,6 @@
 import { Draggable } from "react-beautiful-dnd";
 import { RightCheveron } from "./icons";
-
+import { Link } from "react-router-dom";
 function IssueCard(props) {
   return (
     <Draggable draggableId={props.id} index={props.index} key={props.id}>
@@ -11,18 +11,23 @@ function IssueCard(props) {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
         >
-          <div className="issue-card-content">
-            <div className="issue-card-header">
-              <span>{props.id}</span>
-              {props.parent && (
-                <>
-                  <RightCheveron sx={{ fontSize: 16 }} />
-                  <span>{props.parent}</span>
-                </>
-              )}
+          <Link
+            to={"/issue/" + props.id}
+            style={{ textDecoration: "none", cursor: "default" }}
+          >
+            <div className="issue-card-content">
+              <div className="issue-card-header">
+                <span>{props.id}</span>
+                {props.parent && (
+                  <>
+                    <RightCheveron sx={{ fontSize: 16 }} />
+                    <span>{props.parent}</span>
+                  </>
+                )}
+              </div>
+              <div className="issue-card-title">{props.title}</div>
             </div>
-            <div className="issue-card-title">{props.title}</div>
-          </div>
+          </Link>
         </div>
       )}
     </Draggable>

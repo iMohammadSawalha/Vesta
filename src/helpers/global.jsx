@@ -23,5 +23,33 @@ const columnTitles = [
     <span>Done</span>
   </div>,
 ];
-
-export { statusList, columnTitles };
+const modulesQuill = {
+  toolbar: [
+    [{ header: [1, 2, 3] }, { font: [] }],
+    ["bold", "italic", "underline", "strike", "blockquote"],
+    [
+      { list: "ordered" },
+      { list: "bullet" },
+      { indent: "-1" },
+      { indent: "+1" },
+    ],
+    ["clean"],
+    ["code-block"],
+  ],
+};
+const formatsQuill = [
+  "header",
+  "font",
+  "size",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "blockquote",
+  "list",
+  "bullet",
+  "indent",
+  "code-block",
+];
+const notEmptyString = /^(?!\s*$).+/;
+export { statusList, columnTitles, modulesQuill, formatsQuill, notEmptyString };

@@ -1,10 +1,7 @@
-import { useState } from "react";
 import { flushSync } from "react-dom";
 import { DragDropContext } from "react-beautiful-dnd";
-import data from "../assets/testdata/issues.js";
 import IssueColumn from "./columns";
-const Kanban = () => {
-  const [issues, updateIssues] = useState(data);
+const Kanban = ({ issues, updateIssues }) => {
   const handleOnDragEnd = (result) => {
     if (result.reason == "CANCEL") return;
     if (!result.destination) return;
@@ -26,6 +23,7 @@ const Kanban = () => {
       toColumn.splice(dIndex, 0, issueId);
       tempIssues.columns[sColumn].issues = fromColumn;
       tempIssues.columns[dColumn].issues = toColumn;
+      tempIssues.issues[issueId].status = dColumn;
     } else {
       fromColumn.splice(dIndex, 0, issueId);
       tempIssues.columns[sColumn].issues = fromColumn;

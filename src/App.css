@@ -11,7 +11,7 @@
     height: 100%;
     min-width: 400px;
     overflow:scroll;
-    background-color: rgb(5, 6, 45);;
+    background-color: rgb(5, 6, 45);
 }
 .status-col::-webkit-scrollbar{
     display: none;
@@ -30,12 +30,18 @@
     background-image: linear-gradient(144deg,#AF40FF, #5B42F3 50%,#00DDEB);
     cursor: default !important;
 }
+.issue-card:hover{
+  background-image: linear-gradient(144deg,#bb62fa, #7361e9 50%,#21b4be);
+}
 .issue-card-content{
     background: rgb(5, 6, 45);
     border-radius: 8px;
     width: 100%;
     height: 100%;
     color:white;
+}
+.issue-card-content:hover{
+  background: rgb(22, 23, 73);
 }
 .status-col-title{
     position: sticky;
@@ -93,9 +99,10 @@
     top:25%;
     transform: translate(-50%, -50%);
     width: 600px;
-    background-color: rgb(55, 56, 95);
+    background-color: rgb(50, 51, 102,0.98);
     border-radius: 15px;
     overflow-y: hidden;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 .add-issue-modal-content{
     max-height: 40vh;
@@ -139,7 +146,10 @@ color: #FFFFFF;
 .new-issue-description-placeholder{
   overflow-y: auto;
   scrollbar-gutter: stable;
-  width: fit-content;
+}
+.new-issue-description-placeholder > div > .ql-toolbar,
+.new-issue-description-placeholder > div > .ql-container {
+  border: 0;
 }
 
 
@@ -171,12 +181,12 @@ button .ql-fill,
 }
 .ql-picker-label{
     color: rgb(150, 150, 150);
-}
-.ql-picker-label:hover{
-    color:white
+    font-size: 12px !important;
 }
 .ql-editor.ql-blank::before {
     color: rgb(150, 150, 150) !important;
+    font-size: 16px !important;
+    font-weight: 500;
 }
 .status-menu-selector-button >div>nav>div{
     border-radius: 10px;
@@ -223,4 +233,82 @@ button .ql-fill,
 .flex-container{
     display:flex;
     align-items: center;
+}
+.big-screen-issue{
+  height: 50vh;
+  background-color: rgb(5, 6, 45);
+  color: white;
+  padding: 1rem;
+}
+.big-screen-issue-content{
+  border-radius: 10px;
+  height: 100%;
+  background-color: rgb(30, 31, 70);
+  display: flex;
+  flex-direction: column;
+}
+.big-issue-buttons{
+  padding: 1rem;
+  margin-top: auto;
+}
+.big-screen-issue-header{
+  display: flex;
+  margin: 0.5rem;
+}
+.exit-big-screen-issue{
+  margin-left: auto;
+}
+.delete-issue-modal-button{
+  display: flex;
+  align-items: center;
+  color: #b1b1b1;
+  background-color: transparent;
+  border: none;
+  border-radius: 5px;  
+  padding-top: 4px;
+  margin-left: 0.5rem;
+  cursor: default;
+  padding: 0.2rem;
+}
+.delete-issue-modal-button:hover{
+  background-color: rgb(84, 84, 121);
+  color: #FFFFFF;
+}
+.delete-issue-modal{
+  position: absolute;
+  left: 50%;
+  top:25%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  background-color: rgb(50, 51, 102,0.98);
+  border-radius: 15px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.delete-issue-modal-content{
+  padding: 2rem;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+}
+.delete-issue-modal-content-header{
+color: white;
+}
+.delete-issue-modal-content-buttons{
+  margin-top: auto;
+  display: flex;
+}
+.delete-issue-button{
+  margin-left: auto;
+}
+.cancel-delete-issue-button > button{
+background-color: rgb(50, 51, 102);
+color: white;
+box-shadow: white 4px 4px 0 0;
+border-color: white;
+}
+.cancel-delete-issue-button > button:active{
+  background-color: initial;
+}
+.delete-issue-button > button:active{
+  background-color: rgb(223, 92, 92);
 }

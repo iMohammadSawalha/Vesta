@@ -5,8 +5,10 @@ import Modal from "@mui/material/Modal";
 import { Plus } from "./icons";
 import StatusList from "./issueStatusMenu";
 import { statusList } from "../helpers/global";
-import { Alert } from "@mui/material";
-const AddIssueModal = ({ updateIssues, columnStatus }) => {
+import { Alert, Avatar, Chip } from "@mui/material";
+import { modulesQuill, formatsQuill } from "../helpers/global";
+import { notEmptyString } from "../helpers/global";
+const AddIssueModal = ({ updateIssues, columnStatus, idSymbol }) => {
   const [description, setDescription] = useState("");
   const [title, setTitle] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(
@@ -20,7 +22,6 @@ const AddIssueModal = ({ updateIssues, columnStatus }) => {
     setOpen(false);
     setSelectedIndex(initialIndex);
   };
-  const notEmptyString = /^(?!\s*$).+/;
   const saveNewIssue = () => {
     if (!notEmptyString.test(title)) {
       if (!titleRequired) {
@@ -55,48 +56,38 @@ const AddIssueModal = ({ updateIssues, columnStatus }) => {
     handleClose();
   };
 
-  const modulesQuill = {
-    toolbar: [
-      [{ header: [1, 2, 3] }, { font: [] }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
-      [
-        { list: "ordered" },
-        { list: "bullet" },
-        { indent: "-1" },
-        { indent: "+1" },
-      ],
-      ["clean"],
-      ["code-block"],
-    ],
-  };
-  const formatsQuill = [
-    "header",
-    "font",
-    "size",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "blockquote",
-    "list",
-    "bullet",
-    "indent",
-    "code-block",
-  ];
   return (
     <>
       <button onClick={handleOpen} className="add-card-issue-button">
         <Plus />
       </button>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
+      <Modal open={open} onClose={handleClose}>
         <div className="add-issue-modal">
           <div className="add-issue-modal-content">
             <div className="add-issue-modal-content-header">
+              <Chip
+                variant="outlined"
+                avatar={
+                  <Avatar
+                    sx={{
+                      backgroundColor: "transparent",
+                      borderRight: "1px solid white",
+                    }}
+                  >
+                    <div
+                      style={{
+                        color: "#dbdbdb",
+                        marginTop: "auto",
+                        marginBottom: "5px",
+                      }}
+                    >
+                      {idSymbol}
+                    </div>
+                  </Avatar>
+                }
+                label="New Issue"
+                sx={{ color: "#dbdbdb" }}
+              />
               <div className="add-issue-modal-content-header-buttons">
                 <button
                   className="exit-add-issue-modal-button"
@@ -106,15 +97,13 @@ const AddIssueModal = ({ updateIssues, columnStatus }) => {
                 </button>
               </div>
             </div>
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <input
-                className="new-issue-input-placeholder"
-                placeholder="Issue title"
-                autoFocus
-                onChange={(e) => setTitle(e.target.value)}
-                value={title}
-              />
-            </div>
+            <input
+              className="new-issue-input-placeholder"
+              placeholder="Issue title"
+              autoFocus
+              onChange={(e) => setTitle(e.target.value)}
+              value={title}
+            />
             <div className="new-issue-description-placeholder">
               <ReactQuill
                 formats={formatsQuill}
@@ -146,7 +135,7 @@ const AddIssueModal = ({ updateIssues, columnStatus }) => {
                 </Alert>
               )}
               <button className="new-issue-save-button" onClick={saveNewIssue}>
-                Save
+                Create
               </button>
             </div>
           </div>

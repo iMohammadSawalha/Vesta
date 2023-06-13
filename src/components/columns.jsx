@@ -15,6 +15,7 @@ const IssueColumn = ({ issues, updateIssues }) => {
           <AddIssueModal
             columnStatus={columnName}
             updateIssues={updateIssues}
+            idSymbol={issues.idSymbol}
           />
         </div>
       </div>
