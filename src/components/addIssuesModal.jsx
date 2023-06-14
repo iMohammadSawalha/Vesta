@@ -42,6 +42,7 @@ const AddIssueModal = ({ updateIssues, columnStatus, idSymbol }) => {
       const newState = JSON.parse(JSON.stringify(prevState));
       const newStateId = newState.idSymbol + "-" + newState.idCounter;
       const newIssue = {
+        status: statusList[selectedIndex],
         title: title,
         description: description,
         parent: parentid,
