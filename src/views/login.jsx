@@ -81,12 +81,12 @@ const Login = () => {
                 Show Password
               </div>
             </div>
-            <button className="login-button" onClick={loginButtonHandle}>
-              <span className="login-button-text">Sign in</span>
-            </button>
             <a className="forgot-password-link" href="">
               Forgot Password?
             </a>
+            <button className="login-button" onClick={loginButtonHandle}>
+              <span className="login-button-text">Sign in</span>
+            </button>
             <div className="signup-alternative">
               Don't have an account?
               <a className="signup-alternative-link" href="/register">
