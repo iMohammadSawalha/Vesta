@@ -13,9 +13,6 @@ import { Plus } from "./icons";
 import DeleteIssueModal from "./deleteIssueModal";
 const IssueBigScreen = ({ issues, updateIssues }) => {
   const navigate = useNavigate();
-  const navigateProp = (link) => {
-    navigate(link);
-  };
   const { id } = useParams();
   const [title, setTitle] = useState(() => {
     if (issues.issues[id]) return issues.issues[id].title;
@@ -63,7 +60,7 @@ const IssueBigScreen = ({ issues, updateIssues }) => {
       }
       return newState;
     });
-    navigate("/");
+    navigate(-1);
   };
   return (
     <div className="big-screen-issue">
@@ -96,10 +93,9 @@ const IssueBigScreen = ({ issues, updateIssues }) => {
             id={id}
             updateIssues={updateIssues}
             issues={issues}
-            navigateProp={navigateProp}
           />
           <div className="exit-big-screen-issue">
-            <Link to="/">
+            <Link to={-1}>
               <button className="exit-add-issue-modal-button">
                 <Plus sx={{ transform: "rotate(45deg)" }} />
               </button>
@@ -124,7 +120,7 @@ const IssueBigScreen = ({ issues, updateIssues }) => {
             preserveWhitespace
           />
         </div>
-        <div className="flex-container big-issue-buttons">
+        <div className="big-issue-buttons">
           <div className="status-menu-selector-button">
             <StatusList
               setSelectedIndex={setSelectedIndex}

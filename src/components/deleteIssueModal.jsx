@@ -1,8 +1,9 @@
 import { Modal } from "@mui/material";
 import { useState } from "react";
 import { TrashCan } from "./icons";
-
-const DeleteIssueModal = ({ id, issues, updateIssues, navigateProp }) => {
+import { useNavigate } from "react-router-dom";
+const DeleteIssueModal = ({ id, issues, updateIssues }) => {
+  const nvagiate = useNavigate();
   const [openModal, setOpenModal] = useState(false);
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -22,7 +23,7 @@ const DeleteIssueModal = ({ id, issues, updateIssues, navigateProp }) => {
       );
       return newIssues;
     });
-    navigateProp("/");
+    nvagiate(-1);
   };
   return (
     <>

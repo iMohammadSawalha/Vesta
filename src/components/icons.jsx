@@ -89,6 +89,36 @@ const EyeOff = (props) => {
     </SvgIcon>
   );
 };
+const SquareRound = (props) => {
+  return (
+    <SvgIcon {...props}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <title>square-rounded-badge-outline</title>
+        <path d="M19.5 8C21.43 8 23 6.43 23 4.5C23 2.57 21.43 1 19.5 1C17.57 1 16 2.57 16 4.5C16 6.43 17.57 8 19.5 8M21 16V9.79C20.5 9.93 20 10 19.5 10C19.33 10 19.17 10 19 10V16C19 17.66 17.66 19 16 19H8C6.34 19 5 17.66 5 16V8C5 6.34 6.34 5 8 5H14C14 4.84 14 4.67 14 4.5C14 4 14.07 3.5 14.21 3H8C5.24 3 3 5.24 3 8V16C3 18.76 5.24 21 8 21H16C18.76 21 21 18.76 21 16Z" />
+      </svg>
+    </SvgIcon>
+  );
+};
+const SquareEdit = (props) => {
+  return (
+    <SvgIcon {...props}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <title>square-edit-outline</title>
+        <path d="M5,3C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19H5V5H12V3H5M17.78,4C17.61,4 17.43,4.07 17.3,4.2L16.08,5.41L18.58,7.91L19.8,6.7C20.06,6.44 20.06,6 19.8,5.75L18.25,4.2C18.12,4.07 17.95,4 17.78,4M15.37,6.12L8,13.5V16H10.5L17.87,8.62L15.37,6.12Z" />
+      </svg>
+    </SvgIcon>
+  );
+};
+const Sidebar = (props) => {
+  return (
+    <SvgIcon {...props}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <title>page-layout-sidebar-left</title>
+        <path d="M6,2H18A2,2 0 0,1 20,4V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V4A2,2 0 0,1 6,2M6,8V16H10V8H6Z" />
+      </svg>
+    </SvgIcon>
+  );
+};
 export {
   RightCheveron,
   Plus,
@@ -99,4 +129,7 @@ export {
   TrashCan,
   EyeOn,
   EyeOff,
+  SquareRound,
+  SquareEdit,
+  Sidebar,
 };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import Modal from "@mui/material/Modal";
@@ -8,7 +8,14 @@ import { statusList } from "../helpers/global";
 import { Alert, Avatar, Chip } from "@mui/material";
 import { modulesQuill, formatsQuill } from "../helpers/global";
 import { notEmptyString } from "../helpers/global";
-const AddIssueModal = ({ updateIssues, columnStatus, idSymbol }) => {
+const AddIssueModal = ({
+  updateIssues,
+  columnStatus,
+  idSymbol,
+  noButton,
+  openModalTrigger,
+  setModalTrigger,
+}) => {
   const [description, setDescription] = useState("");
   const [title, setTitle] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(
@@ -19,6 +26,7 @@ const AddIssueModal = ({ updateIssues, columnStatus, idSymbol }) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
+    if (setModalTrigger) setModalTrigger(false);
     setOpen(false);
     setSelectedIndex(initialIndex);
   };
@@ -56,12 +64,18 @@ const AddIssueModal = ({ updateIssues, columnStatus, idSymbol }) => {
     setTitle("");
     handleClose();
   };
-
+  useEffect(() => {
+    if (openModalTrigger) {
+      handleOpen();
+    }
+  }, [openModalTrigger]);
   return (
     <>
-      <button onClick={handleOpen} className="add-card-issue-button">
-        <Plus />
-      </button>
+      {!noButton && (
+        <button onClick={handleOpen} className="add-card-issue-button">
+          <Plus />
+        </button>
+      )}
       <Modal open={open} onClose={handleClose}>
         <div className="add-issue-modal">
           <div className="add-issue-modal-content">
@@ -116,7 +130,7 @@ const AddIssueModal = ({ updateIssues, columnStatus, idSymbol }) => {
                 preserveWhitespace
               />
             </div>
-            <div className="flex-container">
+            <div className="new-issue-modal-footer">
               <div className="status-menu-selector-button">
                 <StatusList
                   setSelectedIndex={setSelectedIndex}

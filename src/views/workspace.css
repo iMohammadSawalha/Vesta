@@ -1,5 +1,7 @@
 .issues-row-container{
-    height: 50vh;
+    height: 100%;
+    width: 100%;
+    background-color: rgb(24, 25, 34);
     overflow-y: auto;
 }
 .status-row{
@@ -20,7 +22,6 @@
     display: flex;
     align-items: center;
 }
-
 .issue-card{
     margin-top: 1rem;
     height: 100px;
@@ -73,7 +74,6 @@
     padding-right: 1rem;
     border-radius: 15px;
 }
-/* CSS */
 .add-card-issue-button {
   color: #b1b1b1;
   background-color: transparent;
@@ -147,10 +147,6 @@ color: #FFFFFF;
 .new-issue-description-placeholder > div > .ql-container {
   border: 0;
 }
-
-
-
-
 button:hover .ql-stroke,
 .ql-picker-label .ql-stroke {
   fill: none;
@@ -226,24 +222,26 @@ button .ql-fill,
     min-width: 120px;
   }
 }
-.flex-container{
+.new-issue-modal-footer{
     display:flex;
     align-items: center;
 }
 .big-screen-issue{
-  height: 50vh;
   background-color: rgb(24, 25, 34);
   color: white;
+  height: 100%;
   padding: 1rem;
 }
 .big-screen-issue-content{
-  border-radius: 10px;
   height: 100%;
+  border-radius: 10px;
   background-color: rgb(32, 34, 46);
   display: flex;
   flex-direction: column;
 }
 .big-issue-buttons{
+  display: flex;
+  align-items: center;
   padding: 1rem;
   margin-top: auto;
 }
@@ -307,4 +305,26 @@ border-color: white;
 }
 .delete-issue-button > button:active{
   background-color: rgb(223, 92, 92);
+}
+.workspace-container{
+    height: 100vh;
+    display: flex;
+}
+.workspace-content{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.navbar-container{
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgb(64, 66, 83);
+    color:white;
+    height: 3rem;
+    background-color: rgb(24, 25, 34);
+}
+.sidebar-toggle-button-container{
+    display: none;
+    transition: 0.5s;
+    margin-left: 0rem;
 }

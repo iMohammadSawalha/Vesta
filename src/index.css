@@ -1,7 +1,7 @@
 html,
 body {
     margin: 0;
-    height: 100vh;
+    /* background-color: rgb(24, 25, 34); */
 }
 @font-face {
     font-family:Rubik;
@@ -27,18 +27,9 @@ body {
 *::-webkit-scrollbar-thumb
 {
 	border-radius: 5px;
-  background: rgb(95,40,215);
-  background: -moz-linear-gradient(0deg, rgba(95,40,215,1) 0%, rgba(95,40,215,1) 100%);
-  background: -webkit-linear-gradient(0deg, rgba(95,40,215,1) 0%, rgba(95,40,215,1) 100%);
-  background: linear-gradient(0deg, rgba(95,40,215,1) 0%, rgba(95,40,215,1) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#5f28d7",endColorstr="#5f28d7",GradientType=1);
+  background: rgb(47, 48, 68);
 }
-/* *::-webkit-scrollbar-thumb:hover
+*::-webkit-scrollbar-thumb:hover
 {
-  background-image: -webkit-gradient(linear,
-  left bottom,
-  left top,
-  color-stop(0.44, rgb(187, 255, 0)),
-  color-stop(0.72, rgb(185, 73, 189)),
-  color-stop(0.86, rgb(28,58,148)));
-} */
+  background-color: rgb(52, 53, 80);
+}

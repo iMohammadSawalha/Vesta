@@ -1,0 +1,18 @@
+@media only screen and (max-width: 600px){
+    .add-issue-modal{
+        border-radius: 0;
+        width: 100vw;
+    }
+    .add-issue-modal-content{
+        padding: 2px;
+    }
+    .delete-issue-modal{
+        width: 100vw;
+    }
+    .new-issue-modal-footer{
+        padding:0.5rem;
+    }
+    .new-issue-save-button{
+        font-size: 16px;
+    }
+}
