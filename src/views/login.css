@@ -72,7 +72,6 @@
   color: white;
   padding: 10px;
   font-size: large;
-  margin-bottom: 1rem;
   border-radius: 10px;
   width: 100%;
   background-color: transparent;
@@ -83,7 +82,7 @@
   color: rgb(170, 169, 169);
 }
 .login-button {
-margin-top: 1rem;
+margin-top: 5rem;
 margin-bottom: 1rem;
 align-items: center;
 background-image: linear-gradient(144deg,#AF40FF, #5B42F3 50%,#00DDEB);
@@ -151,9 +150,28 @@ background: none;
   margin: 2px;
 }
 .login-input-show-password{
-  align-self: self-start;
   cursor: pointer;
+  margin-left: auto;
 }
 .input-error{
 outline: 2px solid rgb(255, 107, 107);
+}
+.email-input-container{
+width: 100%;
+margin-bottom: 1rem;
+}
+.password-input-container{
+  width: 100%;
+  margin-bottom: 3px;
+}
+.password-input-error-placeholder{
+  margin-top: 2px;
+  color: red;
+  height: 25px;
+}
+.email-input-error-placeholder{
+  margin-top: 2px;
+  color: red;
+  padding-top: "5px";
+  height: 25px ;
 }

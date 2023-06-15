@@ -7,7 +7,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorPassword, setErrorPassword] = useState(false);
-  const [typing, setTyping] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const saveEmail = (value) => {
     setEmail(value);
   };
@@ -24,22 +24,22 @@ const Login = () => {
     }
   };
   const loginButtonHandle = () => {
-    setTyping(true);
+    setSubmitting(true);
     // if (!notEmptyString.test(email))
     // if (!notEmptyString.test(password))
   };
   useEffect(() => {
-    if (!notEmptyString.test(email) && typing) {
+    if (!notEmptyString.test(email) && submitting) {
       setErrorEmail(true);
     } else {
       setErrorEmail(false);
     }
-    if (!notEmptyString.test(password) && typing) {
+    if (!notEmptyString.test(password) && submitting) {
       setErrorPassword(true);
     } else {
       setErrorPassword(false);
     }
-  }, [email, password, typing]);
+  }, [email, password, submitting]);
   return (
     <div className="login">
       <div className="login-container">
@@ -47,27 +47,39 @@ const Login = () => {
           <div className="loign-content-placeholder">
             <div className="sign-in-title">Sign in</div>
             <div className="sign-in-subtitle">Log in to your account</div>
-            <input
-              className={
-                errorEmail
-                  ? "login-input login-input-email input-error"
-                  : "login-input login-input-email"
-              }
-              placeholder="Email"
-              onChange={(e) => saveEmail(e.target.value)}
-            />
-            <input
-              className={
-                errorPassword
-                  ? "login-input login-input-password input-error"
-                  : "login-input login-input-password"
-              }
-              placeholder="Passowrd"
-              type={hidden ? "password" : "text"}
-              onChange={(e) => savePassword(e.target.value)}
-            />
-            <div className="login-input-show-password" onClick={toggleHide}>
-              Show Password
+            <div className="email-input-container">
+              <input
+                className={
+                  errorEmail
+                    ? "login-input login-input-email input-error"
+                    : "login-input login-input-email"
+                }
+                placeholder="Email"
+                onChange={(e) => saveEmail(e.target.value)}
+              />
+              <div className="email-input-error-placeholder">
+                {errorEmail && "Please enter an email"}
+              </div>
+            </div>
+            <div className="password-input-container">
+              <input
+                className={
+                  errorPassword
+                    ? "login-input login-input-password input-error"
+                    : "login-input login-input-password"
+                }
+                placeholder="Passowrd"
+                type={hidden ? "password" : "text"}
+                onChange={(e) => savePassword(e.target.value)}
+              />
+            </div>
+            <div style={{ display: "flex", width: "100%" }}>
+              <div className="password-input-error-placeholder">
+                {errorPassword && "Please enter an password"}
+              </div>
+              <div className="login-input-show-password" onClick={toggleHide}>
+                Show Password
+              </div>
             </div>
             <button className="login-button" onClick={loginButtonHandle}>
               <span className="login-button-text">Sign in</span>
@@ -77,7 +89,7 @@ const Login = () => {
             </a>
             <div className="signup-alternative">
               Don't have an account?
-              <a className="signup-alternative-link" href="">
+              <a className="signup-alternative-link" href="/register">
                 Sign up
               </a>
             </div>

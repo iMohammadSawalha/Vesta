@@ -52,4 +52,14 @@ const formatsQuill = [
   "code-block",
 ];
 const notEmptyString = /^(?!\s*$).+/;
-export { statusList, columnTitles, modulesQuill, formatsQuill, notEmptyString };
+const isEmail = /\S+@\S+\.\S+/;
+const isPassword = /^[^\s]{8,}$/; //has at least 8 chars
+export {
+  statusList,
+  columnTitles,
+  modulesQuill,
+  formatsQuill,
+  notEmptyString,
+  isEmail,
+  isPassword,
+};
