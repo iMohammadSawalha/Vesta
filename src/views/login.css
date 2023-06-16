@@ -16,6 +16,26 @@
   background: linear-gradient(0deg, rgba(49, 21, 110,0.8) 0%, rgb(5, 6, 45) 50%, rgb(5, 6, 45) 100%);
   border-radius: 20px;
 }
+@media screen and (max-height: 800px) {
+  .login-button{
+    margin-top: 1rem !important; 
+  }
+  .signup-alternative{
+    margin-top: 1rem !important;
+  }
+}
+@media screen and (max-height: 800px) and (min-height: 670px) {
+  .goback-link{
+    margin-bottom: 3rem !important;
+  }
+}
+@media screen and (max-height: 670px) {
+  .goback-link{
+    margin-bottom: 0rem !important;
+    margin-right: 0rem !important;
+    margin-left: auto ;
+  }
+}
 @media screen and (max-width: 1248px) and (min-width: 858px) {
   .login-container {
     width: 50%;
@@ -25,7 +45,7 @@
 @media screen and (max-width: 858px) and (min-width: 512px) {
   .login-container {
     width: 80%;
-    height: 80%;
+    height: 90%;
   }
 }
 @media screen and (max-width: 512px) {
@@ -45,7 +65,7 @@
 }
 @media screen and (max-width: 512px) {
   .login-content {
-    padding: 5rem;
+    padding: 2rem;
   }
 }
 .loign-content-placeholder{
@@ -175,4 +195,21 @@ margin-bottom: 1rem;
   color: red;
   padding-top: "5px";
   height: 25px ;
+}
+.goback-link{
+  margin-right: auto;
+  margin-bottom: 7rem;
+}
+.goback-link a{
+  color: white;
+  text-decoration: none;
+}
+.goback-link-container{
+  padding: 1rem;
+  border-radius: 15px;
+  background-color: rgb(32, 34, 46);
+  outline: 2px solid rgb(81, 0, 255);
+}
+.goback-link-container:hover{
+  background-color: rgb(54, 56, 71);
 }

@@ -1,4 +1,4 @@
-#not-found-container{
+#main-page-container{
     margin:0;
     padding:0;
     font-family: 'Tomorrow', sans-serif;
@@ -81,4 +81,17 @@
     justify-content: center;
     align-items: center;
     padding: 20px;
+  }
+  .landing-buttons-container {
+    color:white;
+    position: fixed;
+    right: 0;
+    bottom: 85%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  .landing-button{
+    margin: 1rem;
   }

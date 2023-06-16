@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./login.css";
 import { notEmptyString } from "../helpers/global";
+import { Link } from "react-router-dom";
 const Login = () => {
   const [hidden, setHidden] = useState(true);
   const [email, setEmail] = useState("");
@@ -44,6 +45,11 @@ const Login = () => {
     <div className="login">
       <div className="login-container">
         <div className="login-content">
+          <div className="goback-link">
+            <Link to={-1}>
+              <div className="goback-link-container">Go Back</div>
+            </Link>
+          </div>
           <div className="loign-content-placeholder">
             <div className="sign-in-title">Sign in</div>
             <div className="sign-in-subtitle">Log in to your account</div>

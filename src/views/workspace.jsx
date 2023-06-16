@@ -24,12 +24,12 @@ const WorkSpace = () => {
         <Navbar sidebarToggler={toggleSidebar} sidebarActive={sidebarActive} />
         <Routes>
           <Route
-            path="/"
+            path="/all"
             index
             element={<Kanban issues={issues} updateIssues={updateIssues} />}
           />
           <Route
-            path="/issue/:id"
+            path="/:id"
             index
             element={
               <IssueBigScreen issues={issues} updateIssues={updateIssues} />

@@ -3,7 +3,7 @@ import IssueCard from "../components/issue";
 import AddIssueModal from "./addIssuesModal";
 import { statusList, columnTitles } from "../helpers/global";
 const IssueColumn = ({ issues, updateIssues }) => {
-  const HOVERBACKGROUNDCOLOR = "rgba(44, 44, 85, 0.397)";
+  const HOVERBACKGROUNDCOLOR = "rgba(55, 56, 95,0.3)";
   return issues.columnsOrder.map((columnName) => (
     <div className="status-col" key={columnName}>
       <div className="status-col-title">

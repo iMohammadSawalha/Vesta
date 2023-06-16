@@ -1,7 +1,7 @@
-import { useEffect, useRef } from "react";
-import "./landing.css";
 import { useNavigate } from "react-router-dom";
-const NotFound = () => {
+import "./landing.css";
+import { useEffect, useRef } from "react";
+const Landing = () => {
   const containerRef = useRef(null);
   let createStarInterval;
   const navigate = useNavigate();
@@ -30,16 +30,18 @@ const NotFound = () => {
     }
     star.style.right = `${right + 3}px`;
   };
-  const goHome = () => {
-    navigate("/");
+  const navLogin = () => {
+    navigate("/login");
+  };
+  const navRegister = () => {
+    navigate("/register");
   };
   return (
     <div id="main-page-container" ref={containerRef}>
       <div className="text">
-        <div>ERROR</div>
-        <h1>404</h1>
+        <h1>Welcome to Vesta</h1>
         <hr />
-        <div>Page Not Found</div>
+        <div>What a better way to build products</div>
       </div>
 
       <div className="astronaut">
@@ -49,12 +51,15 @@ const NotFound = () => {
           className="src"
         />
       </div>
-      <div className="not-found-buttons-container">
-        <button className="login-button" onClick={goHome}>
-          <span className="login-button-text">Home</span>
+      <div className="landing-buttons-container">
+        <button className="login-button landing-button" onClick={navLogin}>
+          <span className="login-button-text">Login</span>
+        </button>
+        <button className="login-button landing-button" onClick={navRegister}>
+          <span className="login-button-text">Register</span>
         </button>
       </div>
     </div>
   );
 };
-export default NotFound;
+export default Landing;

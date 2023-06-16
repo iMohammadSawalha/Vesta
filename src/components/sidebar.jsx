@@ -28,7 +28,7 @@ const Sidebar = ({ updateIssues, issues, active }) => {
         <hr style={{ width: "100%" }} />
         <SidebarButton
           content="Issues"
-          to="/issues"
+          to="/issues/all"
           icon={<SquareRound sx={IS} />}
         />
         <SidebarButton content="My issues" icon={<SquareRound sx={IS} />} />

@@ -12,7 +12,7 @@ function IssueCard(props) {
           {...provided.dragHandleProps}
         >
           <Link
-            to={"/issue/" + props.id}
+            to={"/issues/" + props.id}
             style={{ textDecoration: "none", cursor: "default" }}
           >
             <div className="issue-card-content">
