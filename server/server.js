@@ -1,11 +1,18 @@
 const express = require("express");
 const app = express();
 require("dotenv").config();
-const login = require("./routes/auth");
+const auth = require("./routes/auth");
 const { authenticateToken } = require("./middleware/tokenAuth");
 const mongoose = require("mongoose");
 app.use(express.json());
-app.use("/api/auth", login);
+const cors = require("cors");
+app.use(
+  cors({
+    credentials: true,
+    origin: "http://localhost:5173",
+  })
+);
+app.use("/api/auth", auth);
 
 //       TESTING      //
 const issues = [

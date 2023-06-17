@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import "./login.css";
 import { isEmail, isPassword } from "../helpers/global";
 import { Link } from "react-router-dom";
+import axios from "../api/axios";
+const REGISTER_URL = "/api/auth/register";
 const Register = () => {
   const [hidden, setHidden] = useState(true);
   const [email, setEmail] = useState("");
@@ -9,11 +11,14 @@ const Register = () => {
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorPassword, setErrorPassword] = useState(false);
   const [typing, setTyping] = useState(false);
+  const controller = new AbortController();
   const saveEmail = (target) => {
     setEmail(target.value);
+    setErrorEmail(false);
   };
   const savePassword = (target) => {
     setPassword(target.value);
+    setErrorPassword(false);
   };
   const toggleHide = (e) => {
     if (hidden) {
@@ -24,8 +29,33 @@ const Register = () => {
       e.target.innerHTML = "Show Password";
     }
   };
-  const loginButtonHandle = () => {
+  const loginButtonHandle = async () => {
     setTyping(true);
+    if (!isEmail.test(email)) return;
+    if (!isPassword.test(password)) return;
+
+    try {
+      const response = await axios.post(
+        REGISTER_URL,
+        JSON.stringify({ email, password }),
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+          signal: controller.signal,
+        }
+      );
+    } catch (error) {
+      //For Testing Logs
+      if (!error?.response) {
+        console.log("No server response");
+      } else if (error.response?.status === 409) {
+        console.log("A user already exists with that email");
+      } else if (error.response?.status === 400) {
+        console.log("Invalid Input");
+      } else {
+        console.log("Registration Failed");
+      }
+    }
   };
   useEffect(() => {
     if (!isEmail.test(email) && typing) {
@@ -38,6 +68,9 @@ const Register = () => {
     } else {
       setErrorPassword(false);
     }
+    return () => {
+      controller.abort();
+    };
   }, [email, password, typing]);
   return (
     <div className="login">
@@ -62,7 +95,7 @@ const Register = () => {
                 onChange={(e) => saveEmail(e.target)}
               />
               <div className="email-input-error-placeholder">
-                {errorEmail && "Invalid email"}
+                {errorEmail && "Enter a valid email"}
               </div>
             </div>
             <div className="password-input-container">

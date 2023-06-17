@@ -1,6 +1,9 @@
 const jwt = require("jsonwebtoken");
-const refreshTokenModel = require("../models/refreshToken");
 const bcrypt = require("bcrypt");
+const { isEmail, isPassword } = require("../helpers/regex");
+const refreshTokenModel = require("../models/refreshToken");
+const userModel = require("../models/user");
+
 const generateAccessToken = (user) => {
   return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "15s" }); //short time for testing
 };
@@ -34,11 +37,12 @@ const storeRefreshToken = async (token, userEmail) => {
   await refreshToken.save();
 };
 
-const loginToken = async (req, res) => {
+const login = async (req, res) => {
   try {
-    if (!req.body.user_email)
-      return res.status(400).json({ error: "No user_email is provided" });
-    const userEmail = req.body.user_email;
+    //authentication here
+    const email = req.body.email;
+    if (!email) return res.status(400).json({ error: "No email is provided" });
+    const userEmail = email;
     const user = { user_email: userEmail };
     const accessToken = generateAccessToken(user);
     const refreshToken = generateAccessRefreshToken(user);
@@ -49,9 +53,31 @@ const loginToken = async (req, res) => {
   }
 };
 
+const findUserWithEmail = async (email) => {
+  const result = await userModel.findOne({ email: email }).exec();
+  if (!result) return false;
+  return result;
+};
+
+const register = async (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  if (!isEmail.test(email)) return res.sendStatus(400);
+  if (!isPassword.test(password)) return res.sendStatus(400);
+  if (await findUserWithEmail(email)) return res.sendStatus(409);
+  const salt = Number(process.env.PASSWORD_SALT_ROUNDS);
+  const hashedPassword = await bcrypt.hash(password, salt);
+  const user = new userModel({
+    email,
+    password: hashedPassword,
+  });
+  await user.save();
+  res.sendStatus(201);
+};
+
 const authRefreshToken = async (req, res) => {
   try {
-    const email = req.body.user_email;
+    const email = req.body.email;
     const refreshToken = req.body.token;
     if (refreshToken == null) return res.sendStatus(401);
     if (!(await refreshTokenExists(refreshToken, email)))
@@ -72,4 +98,4 @@ const authRefreshToken = async (req, res) => {
   }
 };
 
-module.exports = { loginToken, authRefreshToken };
+module.exports = { login, authRefreshToken, register };
