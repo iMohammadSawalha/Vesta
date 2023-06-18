@@ -1,17 +1,24 @@
 import { useEffect, useState } from "react";
+import useAuth from "../hooks/useAuth";
 import "./login.css";
 import { notEmptyString } from "../helpers/global";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+
 import axios from "../api/axios";
+const LOGIN_URL = "/api/auth/login";
 const Login = () => {
+  const { setAuth } = useAuth();
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+
   const [hidden, setHidden] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorPassword, setErrorPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-
-  const LOGIN_URL = "/api/auth/login";
 
   const saveEmail = (value) => {
     setEmail(value);
@@ -42,10 +49,11 @@ const Login = () => {
           withCredentials: true,
         }
       );
-      console.log(response);
+      const accessToken = response?.data?.accessToken;
+      setAuth({ password, email, accessToken });
+      navigate(from, { replace: true });
     } catch (error) {
       //For Testing Logs
-      console.log(error);
       if (!error?.response) {
         console.log("No server response");
       } else if (error.response?.status === 401) {
@@ -79,6 +87,10 @@ const Login = () => {
             </Link>
           </div>
           <div className="loign-content-placeholder">
+            <div>Use this account for testing</div>
+            <br />
+            <span>Email: ahmad@mohsen.com</span>
+            <span>Password: ahmad@mohsen</span>
             <div className="sign-in-title">Sign in</div>
             <div className="sign-in-subtitle">Log in to your account</div>
             <div className="email-input-container">
