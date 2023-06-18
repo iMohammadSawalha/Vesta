@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./login.css";
 import { notEmptyString } from "../helpers/global";
 import { Link } from "react-router-dom";
+import axios from "../api/axios";
 const Login = () => {
   const [hidden, setHidden] = useState(true);
   const [email, setEmail] = useState("");
@@ -9,6 +10,9 @@ const Login = () => {
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorPassword, setErrorPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  const LOGIN_URL = "/api/auth/login";
+
   const saveEmail = (value) => {
     setEmail(value);
   };
@@ -24,10 +28,34 @@ const Login = () => {
       e.target.innerHTML = "Show Password";
     }
   };
-  const loginButtonHandle = () => {
+  const loginButtonHandle = async () => {
     setSubmitting(true);
-    // if (!notEmptyString.test(email))
-    // if (!notEmptyString.test(password))
+    if (!notEmptyString.test(email)) return;
+    if (!notEmptyString.test(password)) return;
+
+    try {
+      const response = await axios.post(
+        LOGIN_URL,
+        JSON.stringify({ email, password }),
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      console.log(response);
+    } catch (error) {
+      //For Testing Logs
+      console.log(error);
+      if (!error?.response) {
+        console.log("No server response");
+      } else if (error.response?.status === 401) {
+        console.log("Invalid credentials");
+      } else if (error.response?.status === 400) {
+        console.log("Invalid input");
+      } else {
+        console.log("Login failed");
+      }
+    }
   };
   useEffect(() => {
     if (!notEmptyString.test(email) && submitting) {

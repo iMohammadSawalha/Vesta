@@ -29,7 +29,7 @@ const Register = () => {
       e.target.innerHTML = "Show Password";
     }
   };
-  const loginButtonHandle = async () => {
+  const registerButtonHandle = async () => {
     setTyping(true);
     if (!isEmail.test(email)) return;
     if (!isPassword.test(password)) return;
@@ -118,7 +118,7 @@ const Register = () => {
                 Show Password
               </div>
             </div>
-            <button className="login-button" onClick={loginButtonHandle}>
+            <button className="login-button" onClick={registerButtonHandle}>
               <span className="login-button-text">Create new account</span>
             </button>
             <div className="signup-alternative">

@@ -39,9 +39,13 @@ const storeRefreshToken = async (token, userEmail) => {
 
 const login = async (req, res) => {
   try {
-    //authentication here
     const email = req.body.email;
-    if (!email) return res.status(400).json({ error: "No email is provided" });
+    const password = req.body.password;
+    if (!isEmail.test(email)) return res.sendStatus(400);
+    const userFound = await findUserWithEmail(email);
+    if (!userFound) return res.sendStatus(401);
+    const matchPassword = await bcrypt.compare(password, userFound.password);
+    if (!matchPassword) return res.sendStatus(401);
     const userEmail = email;
     const user = { user_email: userEmail };
     const accessToken = generateAccessToken(user);
