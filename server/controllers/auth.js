@@ -1,11 +1,29 @@
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const { isEmail, isPassword } = require("../helpers/regex");
 const userModel = require("../models/user");
 const {
   storeRefreshToken,
   generateAccessToken,
   generateAccessRefreshToken,
+  deleteRefreshToken,
 } = require("./tokens");
+
+const register = async (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  if (!isEmail.test(email)) return res.sendStatus(400);
+  if (!isPassword.test(password)) return res.sendStatus(400);
+  if (await findUserWithEmail(email)) return res.sendStatus(409);
+  const salt = Number(process.env.PASSWORD_SALT_ROUNDS);
+  const hashedPassword = await bcrypt.hash(password, salt);
+  const user = new userModel({
+    email,
+    password: hashedPassword,
+  });
+  await user.save();
+  res.sendStatus(201);
+};
 
 const findUserWithEmail = async (email) => {
   const result = await userModel.findOne({ email: email }).exec();
@@ -39,20 +57,28 @@ const login = async (req, res) => {
   }
 };
 
-const register = async (req, res) => {
-  const email = req.body.email;
-  const password = req.body.password;
-  if (!isEmail.test(email)) return res.sendStatus(400);
-  if (!isPassword.test(password)) return res.sendStatus(400);
-  if (await findUserWithEmail(email)) return res.sendStatus(409);
-  const salt = Number(process.env.PASSWORD_SALT_ROUNDS);
-  const hashedPassword = await bcrypt.hash(password, salt);
-  const user = new userModel({
-    email,
-    password: hashedPassword,
-  });
-  await user.save();
-  res.sendStatus(201);
+const logout = async (req, res) => {
+  try {
+    const cookies = req.cookies;
+    const refreshToken = cookies?.refreshToken;
+    if (!refreshToken) return res.sendStatus(204);
+    jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET,
+      async (error, user) => {
+        if (error) {
+          res.clearCookie("refreshToken", { httpOnly: true });
+          return res.sendStatus(204);
+        }
+        const email = user.user_email;
+        await deleteRefreshToken(refreshToken, email);
+        res.clearCookie("refreshToken", { httpOnly: true });
+        return res.sendStatus(204);
+      }
+    );
+  } catch {
+    res.sendStatus(500);
+  }
 };
 
-module.exports = { login, register };
+module.exports = { login, register, logout };

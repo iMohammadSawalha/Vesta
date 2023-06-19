@@ -155,7 +155,6 @@ background: none;
   height: fit-content !important;
 }
 .forgot-password-link{
-  align-self: self-start;
   margin: 0 0 1rem 0;
   text-decoration: none;
   color: rgb(233, 198, 185);
@@ -212,4 +211,7 @@ margin-bottom: 1rem;
 }
 .goback-link-container:hover{
   background-color: rgb(54, 56, 71);
+}
+.stay-logged-in{
+  align-self: flex-start;
 }

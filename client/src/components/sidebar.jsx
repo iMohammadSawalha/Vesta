@@ -3,7 +3,7 @@ import AddIssueModal from "./addIssuesModal";
 import { SquareEdit, SquareRound } from "./icons";
 import "./sidebar.css";
 import SidebarButton from "./sidebarButton";
-const Sidebar = ({ updateIssues, issues, active }) => {
+const Sidebar = ({ updateIssues, issues, active, signOut }) => {
   const [newIssueTrigger, setNewIssueTrigger] = useState(false);
   const ModalTrigger = () => {
     setNewIssueTrigger(1);
@@ -32,6 +32,7 @@ const Sidebar = ({ updateIssues, issues, active }) => {
           icon={<SquareRound sx={IS} />}
         />
         <SidebarButton content="My issues" icon={<SquareRound sx={IS} />} />
+        <SidebarButton action={signOut} content="Sign out" />
       </div>
     </div>
   );

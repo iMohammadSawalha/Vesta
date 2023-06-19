@@ -3,26 +3,28 @@ import useAuth from "../hooks/useAuth";
 import "./login.css";
 import { notEmptyString } from "../helpers/global";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import useInput from "../hooks/useInput";
+import useToggle from "../hooks/useToggle";
 
 import axios from "../api/axios";
 const LOGIN_URL = "/api/auth/login";
 const Login = () => {
   const { setAuth } = useAuth();
-
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
 
   const [hidden, setHidden] = useState(true);
-  const [email, setEmail] = useState("");
+  const [email, reset, emailAttrs] = useInput("email", "");
   const [password, setPassword] = useState("");
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorPassword, setErrorPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [check, toggleCheck] = useToggle("persist", false);
 
-  const saveEmail = (value) => {
-    setEmail(value);
-  };
+  // const saveEmail = (value) => {
+  //   setEmail(value);
+  // };
   const savePassword = (value) => {
     setPassword(value);
   };
@@ -77,6 +79,14 @@ const Login = () => {
       setErrorPassword(false);
     }
   }, [email, password, submitting]);
+
+  // useEffect(() => {
+  //   localStorage.setItem("persist", persist);
+  // }, [persist]);
+
+  // const toggleStayLoggedIn = () => {
+  //   setPersist((prev) => !prev);
+  // };
   return (
     <div className="login">
       <div className="login-container">
@@ -101,7 +111,7 @@ const Login = () => {
                     : "login-input login-input-email"
                 }
                 placeholder="Email"
-                onChange={(e) => saveEmail(e.target.value)}
+                {...emailAttrs}
               />
               <div className="email-input-error-placeholder">
                 {errorEmail && "Please enter an email"}
@@ -121,18 +131,27 @@ const Login = () => {
             </div>
             <div style={{ display: "flex", width: "100%" }}>
               <div className="password-input-error-placeholder">
-                {errorPassword && "Please enter an password"}
+                {errorPassword && "Please enter a password"}
               </div>
               <div className="login-input-show-password" onClick={toggleHide}>
                 Show Password
               </div>
             </div>
-            <a className="forgot-password-link" href="">
-              Forgot Password?
-            </a>
+            <div className="stay-logged-in">
+              <input
+                type="checkbox"
+                id="stay-logged-in"
+                onChange={toggleCheck}
+                checked={check}
+              />
+              <label htmlFor="stay-logged-in">Stay logged in ?</label>
+            </div>
             <button className="login-button" onClick={loginButtonHandle}>
               <span className="login-button-text">Sign in</span>
             </button>
+            <a className="forgot-password-link" href="">
+              Forgot Password?
+            </a>
             <div className="signup-alternative">
               Don't have an account?
               <a className="signup-alternative-link" href="/register">

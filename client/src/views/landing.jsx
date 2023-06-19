@@ -33,8 +33,8 @@ const Landing = () => {
   const navLogin = () => {
     navigate("/login");
   };
-  const navRegister = () => {
-    navigate("/register");
+  const navIssues = () => {
+    navigate("/issues/all");
   };
   return (
     <div id="main-page-container" ref={containerRef}>
@@ -55,8 +55,8 @@ const Landing = () => {
         <button className="login-button landing-button" onClick={navLogin}>
           <span className="login-button-text">Login</span>
         </button>
-        <button className="login-button landing-button" onClick={navRegister}>
-          <span className="login-button-text">Register</span>
+        <button className="login-button landing-button" onClick={navIssues}>
+          <span className="login-button-text">Issues</span>
         </button>
       </div>
     </div>

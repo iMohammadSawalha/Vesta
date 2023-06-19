@@ -8,14 +8,25 @@ import "../App.css";
 import Navbar from "../components/navbar";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import Loading from "../components/loading";
+import useLogout from "../hooks/useLogout";
+import useAuth from "../hooks/useAuth";
 const WorkSpace = () => {
   const [issues, updateIssues] = useState();
   const axiosPrivate = useAxiosPrivate();
   const [isLoading, setIsLoading] = useState(true);
+  const { setAuth } = useAuth();
 
   const navigate = useNavigate();
   const location = useLocation();
   const to = location.pathname;
+
+  const signOut = async () => {
+    await setAuth({});
+    const logout = useLogout();
+    await logout();
+    navigate("/");
+  };
+
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
@@ -58,6 +69,7 @@ const WorkSpace = () => {
         updateIssues={updateIssues}
         issues={issues}
         active={sidebarActive}
+        signOut={signOut}
       />
       <div className="workspace-content">
         <Navbar sidebarToggler={toggleSidebar} sidebarActive={sidebarActive} />

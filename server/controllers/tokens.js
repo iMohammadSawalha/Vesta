@@ -3,10 +3,16 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 const generateAccessToken = (user) => {
-  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "15s" }); //short time for testing
+  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "10s" }); //short time for testing
 };
 const generateAccessRefreshToken = (user) => {
   return jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+};
+
+const deleteRefreshToken = async (token, userEmail) => {
+  const found = await refreshTokenExists(token, userEmail);
+  if (!found) return;
+  await refreshTokenModel.deleteOne({ user_email: userEmail });
 };
 
 const fetchRefreshToken = async (userEmail) => {
@@ -14,12 +20,12 @@ const fetchRefreshToken = async (userEmail) => {
     .findOne({ user_email: userEmail })
     .exec();
   if (!result) return false;
-  return result.token;
+  return result;
 };
 const refreshTokenExists = async (token, userEmail) => {
-  const hashedToken = await fetchRefreshToken(userEmail);
-  if (!hashedToken) return false;
-  return await compareRefreshToken(token, hashedToken);
+  const data = await fetchRefreshToken(userEmail);
+  if (!data) return false;
+  return await compareRefreshToken(token, data.token);
 };
 const compareRefreshToken = async (token, hashedToken) => {
   const exists = await bcrypt.compare(token, hashedToken);
@@ -64,4 +70,5 @@ module.exports = {
   generateAccessRefreshToken,
   storeRefreshToken,
   authRefreshToken,
+  deleteRefreshToken,
 };
