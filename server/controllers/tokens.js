@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 const generateAccessToken = (user) => {
-  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "10s" }); //short time for testing
+  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "15m" }); //short time for testing
 };
 const generateAccessRefreshToken = (user) => {
   return jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
@@ -41,11 +41,11 @@ const authRefreshToken = async (req, res) => {
       process.env.REFRESH_TOKEN_SECRET,
       async (error, user) => {
         if (error) return res.sendStatus(403);
-        const email = user.user_email;
+        const email = user.email;
         if (!(await refreshTokenExists(refreshToken, email)))
           return res.sendStatus(403);
         const accessToken = generateAccessToken({
-          user_email: user.user_email,
+          email: user.email,
         });
         res.json({ accessToken: accessToken });
       }

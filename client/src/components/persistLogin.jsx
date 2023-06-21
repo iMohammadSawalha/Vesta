@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import useRefreshToken from "../hooks/useRefreshToken";
 import useAuth from "../hooks/useAuth";
 import useLocalStorage from "../hooks/useLocalStorage";
+import Loading from "./loading";
 
 const PersistLogin = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -27,14 +28,8 @@ const PersistLogin = () => {
       isMounted = false;
     };
   }, []);
-  useEffect(() => {
-    console.log(`isLoading: ${isLoading}`);
-    console.log(`aT: ${JSON.stringify(auth?.accessToken)}`);
-  }, [isLoading]);
 
-  return (
-    <>{!persist ? <Outlet /> : isLoading ? <p>Loading... </p> : <Outlet />}</>
-  );
+  return <>{!persist ? <Outlet /> : isLoading ? <Loading /> : <Outlet />}</>;
 };
 
 export default PersistLogin;

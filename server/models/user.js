@@ -10,6 +10,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    workspaces: {
+      type: [mongoose.ObjectId],
+      ref: "Workspace",
+    },
   },
   { timestamps: true }
 );

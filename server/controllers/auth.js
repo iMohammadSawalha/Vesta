@@ -41,7 +41,7 @@ const login = async (req, res) => {
     const matchPassword = await bcrypt.compare(password, userFound.password);
     if (!matchPassword) return res.sendStatus(401);
     const userEmail = email;
-    const user = { user_email: userEmail };
+    const user = { email: userEmail };
     const accessToken = generateAccessToken(user);
     const refreshToken = generateAccessRefreshToken(user);
     await storeRefreshToken(refreshToken, userEmail);
@@ -70,7 +70,7 @@ const logout = async (req, res) => {
           res.clearCookie("refreshToken", { httpOnly: true });
           return res.sendStatus(204);
         }
-        const email = user.user_email;
+        const email = user.email;
         await deleteRefreshToken(refreshToken, email);
         res.clearCookie("refreshToken", { httpOnly: true });
         return res.sendStatus(204);
