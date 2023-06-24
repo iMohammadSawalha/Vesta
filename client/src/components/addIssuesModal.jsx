@@ -8,14 +8,15 @@ import { statusList } from "../helpers/global";
 import { Alert, Avatar, Chip } from "@mui/material";
 import { modulesQuill, formatsQuill } from "../helpers/global";
 import { notEmptyString } from "../helpers/global";
+import useAuth from "../hooks/useAuth";
+import { axiosPrivate } from "../api/axios";
 const AddIssueModal = ({
-  updateIssues,
   columnStatus,
-  idSymbol,
   noButton,
   openModalTrigger,
   setModalTrigger,
 }) => {
+  const { issues, setIssues } = useAuth();
   const [description, setDescription] = useState("");
   const [title, setTitle] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(
@@ -30,7 +31,50 @@ const AddIssueModal = ({
     setOpen(false);
     setSelectedIndex(initialIndex);
   };
-  const saveNewIssue = () => {
+  const addIssueRequest = async () => {
+    try {
+      const newState = JSON.parse(JSON.stringify(issues));
+      const newStateId = newState.symbol + "-" + newState.id_counter;
+      const response = await axiosPrivate.post(
+        "/api/issue/add",
+        {
+          url: "new-test",
+          issue: {
+            id: newStateId,
+            status: statusList[selectedIndex],
+            title: title,
+            description: description,
+            // parent: parentid,
+          },
+        },
+        {
+          "Content-Type": "application/json",
+          withCredentials: true,
+        }
+      );
+      const newIssue = {
+        id: newStateId,
+        status: statusList[selectedIndex],
+        title: title,
+        description: description,
+        // parent: parentid,
+      };
+      newState.issues.push(newIssue);
+      const columnToUpdate = newState.columns.find(
+        (column) => column.id === statusList[selectedIndex]
+      );
+      columnToUpdate.issues.push(newStateId);
+      newState.id_counter += 1;
+      setIssues(newState);
+      setDescription("");
+      setTitle("");
+      handleClose();
+    } catch (error) {
+      //TODO ERROR MESSAGE HANDLE
+      console.log(error);
+    }
+  };
+  const saveNewIssue = async () => {
     if (!notEmptyString.test(title)) {
       if (!titleRequired) {
         setTitleRequired(true);
@@ -42,27 +86,7 @@ const AddIssueModal = ({
 
       return;
     }
-    //TODO
-    if (!parent) {
-      var parentid = "";
-    }
-    updateIssues((prevState) => {
-      const newState = JSON.parse(JSON.stringify(prevState));
-      const newStateId = newState.idSymbol + "-" + newState.idCounter;
-      const newIssue = {
-        status: statusList[selectedIndex],
-        title: title,
-        description: description,
-        parent: parentid,
-      };
-      newState.issues[newStateId] = newIssue;
-      newState.columns[statusList[selectedIndex]].issues.push(newStateId);
-      newState.idCounter += 1;
-      return newState;
-    });
-    setDescription("");
-    setTitle("");
-    handleClose();
+    await addIssueRequest();
   };
   useEffect(() => {
     if (openModalTrigger) {
@@ -96,7 +120,7 @@ const AddIssueModal = ({
                         marginBottom: "5px",
                       }}
                     >
-                      {idSymbol}
+                      {issues?.symbol}
                     </div>
                   </Avatar>
                 }

@@ -104,7 +104,7 @@ const workspaceSchema = new mongoose.Schema({
   },
   columns_order: {
     type: [String],
-    default: ["backlog", "inprogress", "todo", "done"],
+    default: ["backlog", "todo", "inprogress", "done"],
   },
 });
 

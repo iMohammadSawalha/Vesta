@@ -2,21 +2,24 @@ import { Droppable } from "react-beautiful-dnd";
 import IssueCard from "../components/issue";
 import AddIssueModal from "./addIssuesModal";
 import { statusList, columnTitles } from "../helpers/global";
-const IssueColumn = ({ issues, updateIssues }) => {
+import useAuth from "../hooks/useAuth";
+const IssueColumn = () => {
   const HOVERBACKGROUNDCOLOR = "rgba(55, 56, 95,0.3)";
-  return issues.columnsOrder.map((columnName) => (
+  const { issues } = useAuth();
+  return issues?.columns_order.map((columnName) => (
     <div className="status-col" key={columnName}>
       <div className="status-col-title">
         {columnTitles[statusList.indexOf(columnName)]}
         <div className="status-col-issues-counter">
-          {issues.columns[columnName].issues.length}
+          {(() => {
+            const column = issues.columns.find(
+              (column) => column.id === columnName
+            );
+            return column.issues.length;
+          })()}
         </div>
         <div className="issues-column-buttons">
-          <AddIssueModal
-            columnStatus={columnName}
-            updateIssues={updateIssues}
-            idSymbol={issues.idSymbol}
-          />
+          <AddIssueModal columnStatus={columnName} />
         </div>
       </div>
       <Droppable droppableId={columnName}>
@@ -30,14 +33,19 @@ const IssueColumn = ({ issues, updateIssues }) => {
                 : "initial",
             }}
           >
-            {issues.columns[columnName].issues.map((item, index) => (
-              <IssueCard
-                id={item}
-                {...issues.issues[item]}
-                key={item}
-                index={index}
-              />
-            ))}
+            {(() => {
+              const column = issues.columns.find(
+                (column) => column.id === columnName
+              );
+              return column.issues.map((item, index) => (
+                <IssueCard
+                  id={item}
+                  issue={issues.issues.find((issue) => issue.id === item)}
+                  key={item}
+                  index={index}
+                />
+              ));
+            })()}
             {provided.placeholder}
           </div>
         )}

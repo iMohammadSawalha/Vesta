@@ -11,14 +11,12 @@ import Loading from "../components/loading";
 import useLogout from "../hooks/useLogout";
 import useAuth from "../hooks/useAuth";
 const WorkSpace = () => {
-  const [issues, updateIssues] = useState();
   const axiosPrivate = useAxiosPrivate();
   const [isLoading, setIsLoading] = useState(true);
-  const { setAuth } = useAuth();
-
+  const { setAuth, setIssues } = useAuth();
+  const [errorStatus, setErrorStatus] = useState();
   const navigate = useNavigate();
   const location = useLocation();
-  const to = location.pathname;
 
   const signOut = async () => {
     await setAuth({});
@@ -33,22 +31,25 @@ const WorkSpace = () => {
 
     const getIssues = async () => {
       try {
-        const response = await axiosPrivate.get("/data", {
-          signal: controller.signal,
-          withCredentials: true,
-        });
-        isMounted && updateIssues(response.data);
+        const response = await axiosPrivate.post(
+          "/api/workspace",
+          {
+            url: "new-test",
+          },
+          {
+            "Content-Type": "application/json",
+            signal: controller.signal,
+            withCredentials: true,
+          }
+        );
+        isMounted && setIssues(response.data);
         setIsLoading(false);
       } catch (error) {
-        console.error(error);
-        navigate("/login", { state: { from: location }, replace: true });
+        setErrorStatus(error.response.status);
       }
     };
     getIssues();
 
-    if (to == "/issues") {
-      navigate("/issues/all");
-    }
     return () => {
       isMounted = false;
       controller.abort();
@@ -65,27 +66,12 @@ const WorkSpace = () => {
   }
   return (
     <div className="workspace-container">
-      <Sidebar
-        updateIssues={updateIssues}
-        issues={issues}
-        active={sidebarActive}
-        signOut={signOut}
-      />
+      <Sidebar active={sidebarActive} signOut={signOut} />
       <div className="workspace-content">
         <Navbar sidebarToggler={toggleSidebar} sidebarActive={sidebarActive} />
         <Routes>
-          <Route
-            path="/all"
-            index
-            element={<Kanban issues={issues} updateIssues={updateIssues} />}
-          />
-          <Route
-            path="/:id"
-            index
-            element={
-              <IssueBigScreen issues={issues} updateIssues={updateIssues} />
-            }
-          />
+          <Route path="/issues" index element={<Kanban />} />
+          <Route path="/:id" index element={<IssueBigScreen />} />
         </Routes>
       </div>
     </div>

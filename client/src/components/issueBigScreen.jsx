@@ -6,31 +6,72 @@ import {
   statusList,
   notEmptyString,
 } from "../helpers/global";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import StatusList from "./issueStatusMenu";
 import { Alert, Avatar, Chip } from "@mui/material";
 import { Plus } from "./icons";
 import DeleteIssueModal from "./deleteIssueModal";
-const IssueBigScreen = ({ issues, updateIssues }) => {
-  const navigate = useNavigate();
+import useAuth from "../hooks/useAuth";
+import { axiosPrivate } from "../api/axios";
+const IssueBigScreen = () => {
+  const { issues, setIssues } = useAuth();
   const { id } = useParams();
-  const [title, setTitle] = useState(() => {
-    if (issues.issues[id]) return issues.issues[id].title;
-  });
-  const [description, setDescription] = useState(() => {
-    if (issues.issues[id]) return issues.issues[id].description;
-  });
+  const issueObj = issues.issues.find((issue) => issue.id === id);
+  useEffect(() => {}, []);
+  const navigate = useNavigate();
+  const [title, setTitle] = useState(issueObj?.title);
+  const [description, setDescription] = useState(issueObj?.description);
   const [titleRequired, setTitleRequired] = useState(false);
-  const columns = Object.keys(issues.columns);
-  let columnStatus = "";
-  columns.map((column) => {
-    if (issues.columns[column].issues.includes(id)) columnStatus = column;
-  });
   const [selectedIndex, setSelectedIndex] = useState(
-    statusList.indexOf(columnStatus)
+    statusList.indexOf(issueObj?.status)
   );
 
-  const saveNewIssue = () => {
+  const saveIssueRequest = async () => {
+    try {
+      const response = await axiosPrivate.post(
+        "/api/issue/edit",
+        {
+          url: "new-test",
+          issue: {
+            id: id,
+            title: title,
+            description: description,
+            status: statusList[selectedIndex],
+            // parent:parentId
+          },
+        },
+        {
+          "Content-Type": "application/json",
+          withCredentials: true,
+        }
+      );
+      const newState = JSON.parse(JSON.stringify(issues));
+      const issueToUpdate = newState.issues.find((issue) => issue.id === id);
+      issueToUpdate.title = title;
+      issueToUpdate.description = description;
+      //issueToUpdate.parent = parentid;
+      if (statusList[selectedIndex] != issueToUpdate.status) {
+        const columnToUpdateFrom = newState.columns.find(
+          (column) => column.id === issueToUpdate.status
+        );
+        columnToUpdateFrom.issues.splice(
+          columnToUpdateFrom.issues.indexOf(id),
+          1
+        );
+        const columnToUpdateTo = newState.columns.find(
+          (column) => column.id === statusList[selectedIndex]
+        );
+        columnToUpdateTo.issues.splice(0, 0, id);
+        issueToUpdate.status = statusList[selectedIndex];
+      }
+      setIssues(newState);
+      navigate(-1);
+    } catch (error) {
+      //TODO ERROR MESSAGE HANDLE
+      console.log(error);
+    }
+  };
+  const saveNewIssue = async () => {
     if (!notEmptyString.test(title)) {
       if (!titleRequired) {
         setTitleRequired(true);
@@ -41,26 +82,7 @@ const IssueBigScreen = ({ issues, updateIssues }) => {
       }
       return;
     }
-    //TODO
-    if (!parent) {
-      var parentid = "";
-    }
-    updateIssues((prevState) => {
-      const newState = JSON.parse(JSON.stringify(prevState));
-      newState.issues[id].title = title;
-      newState.issues[id].description = description;
-      newState.issues[id].parent = parentid;
-      if (statusList[selectedIndex] != newState.issues[id].status) {
-        newState.columns[newState.issues[id].status].issues.splice(
-          newState.columns[newState.issues[id].status].issues.indexOf(id),
-          1
-        );
-        newState.columns[statusList[selectedIndex]].issues.splice(0, 0, id);
-        newState.issues[id].status = statusList[selectedIndex];
-      }
-      return newState;
-    });
-    navigate(-1);
+    await saveIssueRequest();
   };
   return (
     <div className="big-screen-issue">
@@ -82,18 +104,14 @@ const IssueBigScreen = ({ issues, updateIssues }) => {
                     marginBottom: "5px",
                   }}
                 >
-                  {issues.idSymbol}
+                  {issues.symbol}
                 </div>
               </Avatar>
             }
-            label={id.slice(id.indexOf("-") + 1)}
+            label={id?.slice(id?.indexOf("-") + 1)}
             sx={{ color: "#dbdbdb" }}
           />
-          <DeleteIssueModal
-            id={id}
-            updateIssues={updateIssues}
-            issues={issues}
-          />
+          <DeleteIssueModal id={id} />
           <div className="exit-big-screen-issue">
             <Link to={-1}>
               <button className="exit-add-issue-modal-button">

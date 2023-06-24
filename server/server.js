@@ -3,6 +3,7 @@ const app = express();
 require("dotenv").config();
 const auth = require("./routes/auth");
 const workspace = require("./routes/workspace");
+const issue = require("./routes/issue");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 
@@ -19,15 +20,7 @@ app.use(
 
 app.use("/api/auth", auth);
 app.use("/api/workspace", workspace);
-
-// url_id: "test",
-// name: "Test",
-// symbol: "TS",
-// members: {
-//   email: "ahmad@mohsen.com",
-//   role: "admin",
-// },
-
+app.use("/api/issue", issue);
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,

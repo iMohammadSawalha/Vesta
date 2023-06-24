@@ -3,7 +3,7 @@ import AddIssueModal from "./addIssuesModal";
 import { SquareEdit, SquareRound } from "./icons";
 import "./sidebar.css";
 import SidebarButton from "./sidebarButton";
-const Sidebar = ({ updateIssues, issues, active, signOut }) => {
+const Sidebar = ({ active, signOut }) => {
   const [newIssueTrigger, setNewIssueTrigger] = useState(false);
   const ModalTrigger = () => {
     setNewIssueTrigger(1);
@@ -13,9 +13,7 @@ const Sidebar = ({ updateIssues, issues, active, signOut }) => {
     <div className={active ? "sidebar-container active" : "sidebar-container"}>
       <div className="sidebar-content">
         <AddIssueModal
-          updateIssues={updateIssues}
           columnStatus="backlog"
-          idSymbol={issues.idSymbol}
           noButton
           openModalTrigger={newIssueTrigger}
           setModalTrigger={setNewIssueTrigger}

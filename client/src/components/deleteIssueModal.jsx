@@ -2,8 +2,11 @@ import { Modal } from "@mui/material";
 import { useState } from "react";
 import { TrashCan } from "./icons";
 import { useNavigate } from "react-router-dom";
-const DeleteIssueModal = ({ id, issues, updateIssues }) => {
+import useAuth from "../hooks/useAuth";
+import { axiosPrivate } from "../api/axios";
+const DeleteIssueModal = ({ id }) => {
   const nvagiate = useNavigate();
+  const { issues, setIssues } = useAuth();
   const [openModal, setOpenModal] = useState(false);
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -11,19 +14,41 @@ const DeleteIssueModal = ({ id, issues, updateIssues }) => {
   const handleCloseModal = () => {
     setOpenModal(false);
   };
-  const handleDelete = () => {
-    if (!(id in issues.issues)) return;
-    updateIssues((prevState) => {
-      const newIssues = JSON.parse(JSON.stringify(prevState));
-      const issueStatus = newIssues.issues[id].status;
-      delete newIssues.issues[id];
-      newIssues.columns[issueStatus].issues.splice(
-        newIssues.columns[issueStatus].issues.indexOf(id),
-        1
+  const deleteIssueRequest = async () => {
+    try {
+      const response = await axiosPrivate.post(
+        "/api/issue/delete",
+        {
+          url: "new-test",
+          id: id,
+        },
+        {
+          "Content-Type": "application/json",
+          withCredentials: true,
+        }
       );
-      return newIssues;
-    });
-    nvagiate(-1);
+      const newIssues = JSON.parse(JSON.stringify(issues));
+      const issueToUpdate = newIssues.issues.find((issue) => issue.id === id);
+      const issueStatus = issueToUpdate.status;
+      const indexOfIssue = newIssues.issues.findIndex(
+        (issue) => issue.id === id
+      );
+      newIssues.issues.splice(indexOfIssue, 1);
+      const columnToUpdate = newIssues.columns.find(
+        (column) => column.id === issueStatus
+      );
+      columnToUpdate.issues.splice(columnToUpdate.issues.indexOf(id), 1);
+      setIssues(newIssues);
+      nvagiate(-1);
+    } catch (error) {
+      //TODO ERROR MESSAGE HANDLE
+      console.log(error);
+    }
+  };
+  const handleDelete = async () => {
+    const issue = issues.issues.find((issue) => issue.id === id);
+    if (!issue) return;
+    await deleteIssueRequest();
   };
   return (
     <>
