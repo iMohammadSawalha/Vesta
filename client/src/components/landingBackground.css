@@ -3,7 +3,11 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: radial-gradient(ellipse at bottom, #0d1d31 0%, #0c0d13 100%);
+  background: radial-gradient(
+    ellipse at bottom,
+    rgb(32, 34, 46) 0%,
+    rgb(18, 19, 26) 100%
+  );
   overflow: hidden;
 }
 
@@ -11,13 +15,13 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 50%;
-  height: 120%;
+  width: 80%;
+  height: 00%;
   transform: rotate(-45deg);
 }
 
 .star {
-  --star-color: rgb(98, 0, 255);
+  --star-color: #645bff;
   --star-tail-length: 6em;
   --star-tail-height: 2px;
   --star-width: calc(var(--star-tail-length) / 6);

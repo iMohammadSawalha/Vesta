@@ -1,6 +1,6 @@
 const { isInteger } = require("../helpers/regex");
 const workspaceModel = require("../models/workspace");
-
+const { isObjectIdValid } = require("../helpers/mongoose");
 const addIssue = async (req, res) => {
   try {
     const workspaceUrl = req.body.url;
@@ -29,28 +29,30 @@ const editIssue = async (req, res) => {
   try {
     const workspaceUrl = req.body.url;
     const newIssue = req.body.issue;
+    if (!newIssue || !newIssue.id) return res.sendStatus(400);
+    if (newIssue.assignee)
+      if (!isObjectIdValid(newIssue.assignee)) return res.sendStatus(400);
     const workspace = await workspaceModel
       .findOne({ url_id: workspaceUrl })
       .exec();
-    if (!newIssue || !newIssue.id || !newIssue.status)
-      return res.sendStatus(400);
     const issueToUpdate = workspace.issues.find(
       (issue) => issue.id === newIssue.id
     );
     if (!issueToUpdate) return res.sendStatus(404);
-    if (newIssue.status !== issueToUpdate.status) {
-      const columnToUpdateFrom = workspace.columns.find(
-        (column) => column.id === issueToUpdate.status
-      );
-      columnToUpdateFrom.issues.splice(
-        columnToUpdateFrom.issues.indexOf(newIssue.id),
-        1
-      );
-      const columnToUpdateTo = workspace.columns.find(
-        (column) => column.id === newIssue.status
-      );
-      columnToUpdateTo.issues.splice(0, 0, newIssue.id);
-    }
+    if (newIssue.status)
+      if (newIssue.status !== issueToUpdate.status) {
+        const columnToUpdateFrom = workspace.columns.find(
+          (column) => column.id === issueToUpdate.status
+        );
+        columnToUpdateFrom.issues.splice(
+          columnToUpdateFrom.issues.indexOf(newIssue.id),
+          1
+        );
+        const columnToUpdateTo = workspace.columns.find(
+          (column) => column.id === newIssue.status
+        );
+        columnToUpdateTo.issues.splice(0, 0, newIssue.id);
+      }
     Object.assign(issueToUpdate, newIssue);
     workspace.save();
     res.sendStatus(204);
@@ -78,6 +80,7 @@ const moveIssue = async (req, res) => {
     const fromColumn = workspace.columns.find(
       (column) => column.id === sColumn
     );
+    if (fromColumn.issues.indexOf(id) !== sIndex) return res.sendStatus(400);
     fromColumn.issues.splice(sIndex, 1);
     if (sColumn != dColumn) {
       const toColumn = workspace.columns.find(

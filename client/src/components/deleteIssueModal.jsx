@@ -1,11 +1,13 @@
 import { Modal } from "@mui/material";
 import { useState } from "react";
 import { TrashCan } from "./icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
-import { axiosPrivate } from "../api/axios";
-const DeleteIssueModal = ({ id }) => {
-  const nvagiate = useNavigate();
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+const DeleteIssueModal = () => {
+  const { id, url } = useParams();
+  const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
   const { issues, setIssues } = useAuth();
   const [openModal, setOpenModal] = useState(false);
   const handleOpenModal = () => {
@@ -19,7 +21,7 @@ const DeleteIssueModal = ({ id }) => {
       const response = await axiosPrivate.post(
         "/api/issue/delete",
         {
-          url: "new-test",
+          url: url,
           id: id,
         },
         {
@@ -39,7 +41,7 @@ const DeleteIssueModal = ({ id }) => {
       );
       columnToUpdate.issues.splice(columnToUpdate.issues.indexOf(id), 1);
       setIssues(newIssues);
-      nvagiate(-1);
+      navigate(-1);
     } catch (error) {
       //TODO ERROR MESSAGE HANDLE
       console.log(error);

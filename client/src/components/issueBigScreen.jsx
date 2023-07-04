@@ -6,38 +6,41 @@ import {
   statusList,
   notEmptyString,
 } from "../helpers/global";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import StatusList from "./issueStatusMenu";
 import { Alert, Avatar, Chip } from "@mui/material";
 import { Plus } from "./icons";
 import DeleteIssueModal from "./deleteIssueModal";
 import useAuth from "../hooks/useAuth";
-import { axiosPrivate } from "../api/axios";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import IssueNotFound from "./issueNotFound";
+import IssueAssigneeMenu from "./issueAssignee";
+import userImage from "../assets/images/user.png";
 const IssueBigScreen = () => {
-  const { issues, setIssues } = useAuth();
-  const { id } = useParams();
-  const issueObj = issues.issues.find((issue) => issue.id === id);
-  useEffect(() => {}, []);
   const navigate = useNavigate();
+  const axiosPrivate = useAxiosPrivate();
+  const { issues, setIssues } = useAuth();
+  const { id, url } = useParams();
+  const issueObj = issues.issues.find((issue) => issue.id === id);
   const [title, setTitle] = useState(issueObj?.title);
   const [description, setDescription] = useState(issueObj?.description);
   const [titleRequired, setTitleRequired] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(
     statusList.indexOf(issueObj?.status)
   );
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const saveIssueRequest = async () => {
     try {
       const response = await axiosPrivate.post(
         "/api/issue/edit",
         {
-          url: "new-test",
+          url: url,
           issue: {
             id: id,
             title: title,
             description: description,
             status: statusList[selectedIndex],
-            // parent:parentId
           },
         },
         {
@@ -49,7 +52,6 @@ const IssueBigScreen = () => {
       const issueToUpdate = newState.issues.find((issue) => issue.id === id);
       issueToUpdate.title = title;
       issueToUpdate.description = description;
-      //issueToUpdate.parent = parentid;
       if (statusList[selectedIndex] != issueToUpdate.status) {
         const columnToUpdateFrom = newState.columns.find(
           (column) => column.id === issueToUpdate.status
@@ -65,7 +67,7 @@ const IssueBigScreen = () => {
         issueToUpdate.status = statusList[selectedIndex];
       }
       setIssues(newState);
-      navigate(-1);
+      navigate("/");
     } catch (error) {
       //TODO ERROR MESSAGE HANDLE
       console.log(error);
@@ -84,6 +86,7 @@ const IssueBigScreen = () => {
     }
     await saveIssueRequest();
   };
+  if (!issueObj) return <IssueNotFound id={id} />;
   return (
     <div className="big-screen-issue">
       <div className="big-screen-issue-content">
@@ -111,9 +114,9 @@ const IssueBigScreen = () => {
             label={id?.slice(id?.indexOf("-") + 1)}
             sx={{ color: "#dbdbdb" }}
           />
-          <DeleteIssueModal id={id} />
+          <DeleteIssueModal />
           <div className="exit-big-screen-issue">
-            <Link to={-1}>
+            <Link to="/">
               <button className="exit-add-issue-modal-button">
                 <Plus sx={{ transform: "rotate(45deg)" }} />
               </button>
@@ -145,6 +148,35 @@ const IssueBigScreen = () => {
               selectedIndex={selectedIndex}
             />
           </div>
+          <IssueAssigneeMenu
+            id={id}
+            width={30}
+            height={30}
+            setAnchorEl={setAnchorEl}
+            anchorEl={anchorEl}
+            menuButton={
+              <div
+                className="issue-assignee-menu-big-screen"
+                onClick={(e) => setAnchorEl(e.currentTarget)}
+              >
+                <div>
+                  <img
+                    width={30}
+                    height={30}
+                    src={issueObj?.assignee?.image || userImage}
+                  />
+                </div>
+                <span
+                  className="assignee-menu-text-holder"
+                  style={{ marginLeft: "0.5rem" }}
+                >
+                  {issueObj?.assignee?.email
+                    ? issueObj?.assignee?.email
+                    : "Unassinged"}
+                </span>
+              </div>
+            }
+          />
           {titleRequired && (
             <Alert
               severity="warning"

@@ -10,14 +10,15 @@ const hasWrokspaceAccess = (req, res, next) => {
       if (error) return res.sendStatus(403);
       const email = user.email;
       const workspaceData = await workspaceModel
-        .findOne({ url_id: workspaceUrl }, { _id: false, __v: false })
+        .findOne({ url_id: workspaceUrl })
+        .populate("members.user", "email")
         .lean()
         .exec();
-      if (!workspaceData) return res.sendStatus(404);
+      if (!workspaceData) return res.status(404).json({ error: "NotFound" });
       const isMember = workspaceData.members.some(
-        (user) => user.email === email
+        (member) => member.user.email === email
       );
-      if (!isMember) return res.sendStatus(403);
+      if (!isMember) return res.status(403).json({ error: "NotMember" });
       next();
     });
   } catch {

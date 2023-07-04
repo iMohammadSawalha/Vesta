@@ -1,6 +1,7 @@
 const refreshTokenModel = require("../models/refreshToken");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const { getDefaultWorkspaceByEmailHelper } = require("./workspace");
 
 const generateAccessToken = (user) => {
   return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "15m" }); //short time for testing
@@ -47,7 +48,8 @@ const authRefreshToken = async (req, res) => {
         const accessToken = generateAccessToken({
           email: user.email,
         });
-        res.json({ accessToken: accessToken });
+        const defaultWorkspace = await getDefaultWorkspaceByEmailHelper(email);
+        res.json({ accessToken: accessToken, ...defaultWorkspace });
       }
     );
   } catch {

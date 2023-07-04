@@ -38,14 +38,10 @@ const StatusList = ({ selectedIndex, setSelectedIndex }) => {
         </ListItem>
       </List>
       <Menu
-        id="lock-menu"
+        className="issue-status-inner-menu-big-screen"
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        MenuListProps={{
-          "aria-labelledby": "lock-button",
-          role: "listbox",
-        }}
       >
         {options.map((option, index) => (
           <MenuItem

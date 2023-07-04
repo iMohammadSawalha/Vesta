@@ -9,13 +9,16 @@ import { Alert, Avatar, Chip } from "@mui/material";
 import { modulesQuill, formatsQuill } from "../helpers/global";
 import { notEmptyString } from "../helpers/global";
 import useAuth from "../hooks/useAuth";
-import { axiosPrivate } from "../api/axios";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { useParams } from "react-router-dom";
 const AddIssueModal = ({
   columnStatus,
   noButton,
   openModalTrigger,
   setModalTrigger,
 }) => {
+  const { url } = useParams();
+  const axiosPrivate = useAxiosPrivate();
   const { issues, setIssues } = useAuth();
   const [description, setDescription] = useState("");
   const [title, setTitle] = useState("");
@@ -38,7 +41,7 @@ const AddIssueModal = ({
       const response = await axiosPrivate.post(
         "/api/issue/add",
         {
-          url: "new-test",
+          url: url,
           issue: {
             id: newStateId,
             status: statusList[selectedIndex],

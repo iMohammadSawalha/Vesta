@@ -1,6 +1,4 @@
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import Kanban from "../components/kanban";
-import IssueBigScreen from "../components/issueBigScreen";
+import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "./workspace.css";
 import Sidebar from "../components/sidebar";
@@ -10,13 +8,17 @@ import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import Loading from "../components/loading";
 import useLogout from "../hooks/useLogout";
 import useAuth from "../hooks/useAuth";
+import { Backdrop } from "@mui/material";
+import WorkspaceNotFound from "../components/workspaceNotFound";
+import WorkspaceUnauthorized from "../components/workspaceUnauthorized";
 const WorkSpace = () => {
+  const { url } = useParams();
   const axiosPrivate = useAxiosPrivate();
   const [isLoading, setIsLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
+  const [unauthorized, setUnauthorized] = useState(false);
   const { setAuth, setIssues } = useAuth();
-  const [errorStatus, setErrorStatus] = useState();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const signOut = async () => {
     await setAuth({});
@@ -34,7 +36,7 @@ const WorkSpace = () => {
         const response = await axiosPrivate.post(
           "/api/workspace",
           {
-            url: "new-test",
+            url: url,
           },
           {
             "Content-Type": "application/json",
@@ -45,7 +47,17 @@ const WorkSpace = () => {
         isMounted && setIssues(response.data);
         setIsLoading(false);
       } catch (error) {
-        setErrorStatus(error.response.status);
+        if (
+          error?.response?.status === 404 &&
+          error?.response?.data?.error === "NotFound"
+        )
+          setNotFound(true);
+        if (
+          error?.response?.status === 403 &&
+          error?.response?.data?.error === "NotMember"
+        )
+          setUnauthorized(true);
+        setIsLoading(false);
       }
     };
     getIssues();
@@ -61,18 +73,22 @@ const WorkSpace = () => {
     sidebarActive ? setSidebarActive(false) : setSidebarActive(true);
   };
 
-  if (isLoading) {
-    return <Loading />;
-  }
+  if (isLoading) return <Loading />;
+
+  if (notFound) return <WorkspaceNotFound />;
+
+  if (unauthorized) return <WorkspaceUnauthorized />;
   return (
     <div className="workspace-container">
+      <Backdrop
+        sx={{ backgroundColor: "transparent", zIndex: 2 }}
+        open={sidebarActive}
+        onClick={() => setSidebarActive(false)}
+      ></Backdrop>
       <Sidebar active={sidebarActive} signOut={signOut} />
       <div className="workspace-content">
         <Navbar sidebarToggler={toggleSidebar} sidebarActive={sidebarActive} />
-        <Routes>
-          <Route path="/issues" index element={<Kanban />} />
-          <Route path="/:id" index element={<IssueBigScreen />} />
-        </Routes>
+        <Outlet />
       </div>
     </div>
   );

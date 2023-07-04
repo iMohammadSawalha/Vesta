@@ -15,63 +15,54 @@ const issueSchema = new mongoose.Schema({
     type: String,
   },
   assignee: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
   },
   status: {
     type: String,
     required: true,
   },
 });
-const memberSchema = new mongoose.Schema(
-  {
-    email: {
-      type: String,
-      required: true,
-    },
-    role: {
-      type: String,
-      enum: ["admin", "member"],
-      required: true,
-    },
+const columnSchema = new mongoose.Schema({
+  id: {
+    type: String,
+    required: true,
   },
-  { _id: false }
-);
-const columnSchema = new mongoose.Schema(
-  {
-    id: {
-      type: String,
-      required: true,
-    },
-    title: {
-      type: String,
-    },
-    issues: {
-      type: [String],
-      ref: "Issue",
-    },
+  title: {
+    type: String,
   },
-  { _id: false }
-);
+  issues: {
+    type: [String],
+  },
+});
 const workspaceSchema = new mongoose.Schema({
   url_id: {
     type: String,
     required: true,
     unique: true,
+    lowercase: true,
+  },
+  image: {
+    type: String,
   },
   name: {
     type: String,
     required: true,
   },
-  members: {
-    type: [memberSchema],
-    validate: {
-      validator: function (array) {
-        return array.length > 0;
+  members: [
+    {
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
       },
-      message: "At least one member is required.",
+      role: {
+        type: String,
+        enum: ["admin", "member"],
+        required: true,
+      },
     },
-    required: true,
-  },
+  ],
   symbol: {
     type: String,
     required: true,

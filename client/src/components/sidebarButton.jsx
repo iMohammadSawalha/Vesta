@@ -6,7 +6,16 @@ const SidebarButton = ({ icon, to, content, action, style }) => {
       <Link to={to}>
         <div className="sidebar-button-content" onClick={action}>
           {icon}
-          <div className="sidebar-button-text">{content}</div>
+          <div
+            className="sidebar-button-text"
+            style={{
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+            }}
+          >
+            {content}
+          </div>
         </div>
       </Link>
     </div>

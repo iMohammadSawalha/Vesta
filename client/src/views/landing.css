@@ -16,8 +16,49 @@
   background-color: rgb(32, 34, 46);
 }
 .landing-container {
+  display: flex;
+  flex-direction: column;
   color: white;
   z-index: 1;
   height: 100vh;
   width: 100%;
+}
+.landing-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  padding-top: 1%;
+  padding-right: 5%;
+}
+.landing-navbar-buttons {
+  display: flex;
+  gap: 1rem;
+}
+.landing-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60%;
+}
+.landing-title {
+  font-size: 4em;
+  font-weight: 600;
+}
+.landing-subtitle {
+  text-decoration: overline;
+}
+.workspace-not-found {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+.not-found-buttons-group {
+  display: flex;
+  width: 90%;
+  color: white;
+  position: absolute;
+  top: 5%;
+  right: 5%;
 }

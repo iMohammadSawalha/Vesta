@@ -54,6 +54,7 @@ const formatsQuill = [
 const notEmptyString = /^(?!\s*$).+/;
 const isEmail = /\S+@\S+\.\S+/;
 const isPassword = /^[^\s]{8,}$/; //has at least 8 chars
+const isValidWorkspaceName = /^[a-zA-Z]{3,}$/; // has at least 3 letters
 export {
   statusList,
   columnTitles,
@@ -62,4 +63,5 @@ export {
   notEmptyString,
   isEmail,
   isPassword,
+  isValidWorkspaceName,
 };

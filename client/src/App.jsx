@@ -5,17 +5,29 @@ import WorkSpace from "./views/workspace";
 import RequireAuth from "./components/requireAuth";
 import PersistLogin from "./components/persistLogin";
 import { Routes, Route } from "react-router-dom";
-import Test from "./views/test";
+import DefaultWorkspace from "./components/defaultWorkspace";
+import CreateWorkspace from "./views/createWorkspace";
+import Kanban from "./components/kanban";
+import IssueBigScreen from "./components/issueBigScreen";
+import AvatarGen from "./components/avatarGen";
 function App() {
   return (
     <Routes>
-      <Route path="/" index element={<Landing />} />
-      <Route path="/test" index element={<Test />} />
-      <Route path="/login" index element={<Login />} />
-      <Route path="/register" index element={<Register />} />
       <Route element={<PersistLogin />}>
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route element={<RequireAuth />}>
-          <Route path="/:url/*" index element={<WorkSpace />} />
+          <Route path="/workspace/new" element={<CreateWorkspace />} />
+          <Route
+            path="/workspace/default"
+            index
+            element={<DefaultWorkspace />}
+          />
+          <Route path="/:url" element={<WorkSpace />}>
+            <Route index element={<Kanban />} />
+            <Route path="/:url/:id" element={<IssueBigScreen />} />
+          </Route>
         </Route>
       </Route>
     </Routes>

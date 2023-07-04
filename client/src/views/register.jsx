@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
 import "./login.css";
 import { isEmail, isPassword } from "../helpers/global";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "../api/axios";
+import useAuth from "../hooks/useAuth";
 const REGISTER_URL = "/api/auth/register";
 const Register = () => {
+  const { auth } = useAuth();
   const [hidden, setHidden] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorPassword, setErrorPassword] = useState(false);
   const [typing, setTyping] = useState(false);
-  const controller = new AbortController();
+  const from = location.state?.from?.pathname || "/";
+  const navigate = useNavigate();
   const saveEmail = (target) => {
     setEmail(target.value);
     setErrorEmail(false);
@@ -23,10 +26,10 @@ const Register = () => {
   const toggleHide = (e) => {
     if (hidden) {
       setHidden(false);
-      e.target.innerHTML = "Hide Password";
+      e.target.innerHTML = "Hide";
     } else {
       setHidden(true);
-      e.target.innerHTML = "Show Password";
+      e.target.innerHTML = "Show";
     }
   };
   const registerButtonHandle = async () => {
@@ -41,9 +44,9 @@ const Register = () => {
         {
           headers: { "Content-Type": "application/json" },
           withCredentials: true,
-          signal: controller.signal,
         }
       );
+      navigate("/login");
     } catch (error) {
       //For Testing Logs
       if (!error?.response) {
@@ -68,67 +71,52 @@ const Register = () => {
     } else {
       setErrorPassword(false);
     }
-    return () => {
-      controller.abort();
-    };
   }, [email, password, typing]);
+  useEffect(() => {
+    if (auth?.accessToken) navigate(from, { replace: true });
+  }, []);
   return (
-    <div className="login">
-      <div className="login-container">
-        <div className="login-content">
-          <div className="goback-link">
-            <Link to={-1}>
-              <div className="goback-link-container">Go Back</div>
-            </Link>
+    <div className="auth-container">
+      <div className="auth-content">
+        <h2 style={{ marginRight: "2rem", width: "100%", fontWeight: "400" }}>
+          Create your new account
+        </h2>
+        <input
+          className={
+            errorEmail
+              ? "auth-input auth-input-email input-error"
+              : "auth-input auth-input-email"
+          }
+          placeholder="Email"
+          onChange={(e) => saveEmail(e.target)}
+        />
+        <div className="email-input-error-placeholder">
+          {errorEmail && "Please enter a valid email"}
+        </div>
+        <input
+          className={
+            errorPassword
+              ? "auth-input auth-input-password input-error"
+              : "auth-input auth-input-password"
+          }
+          placeholder="Passowrd"
+          type={hidden ? "password" : "text"}
+          onChange={(e) => savePassword(e.target)}
+        />
+        <div className="passowrd-input-footer">
+          <div className="password-input-error-placeholder">
+            {errorPassword && "Password must be at least 8 characters"}
           </div>
-          <div className="loign-content-placeholder">
-            <div className="sign-in-title">Register</div>
-            <div className="sign-in-subtitle">Create a new account</div>
-            <div className="email-input-container">
-              <input
-                className={
-                  errorEmail
-                    ? "login-input login-input-email input-error"
-                    : "login-input login-input-email"
-                }
-                placeholder="Email"
-                onChange={(e) => saveEmail(e.target)}
-              />
-              <div className="email-input-error-placeholder">
-                {errorEmail && "Enter a valid email"}
-              </div>
-            </div>
-            <div className="password-input-container">
-              <input
-                className={
-                  errorPassword
-                    ? "login-input login-input-password input-error"
-                    : "login-input login-input-password"
-                }
-                placeholder="Passowrd"
-                type={hidden ? "password" : "text"}
-                onChange={(e) => savePassword(e.target)}
-              />
-            </div>
-            <div style={{ display: "flex", width: "100%" }}>
-              <div className="password-input-error-placeholder">
-                {errorPassword && "Password must be at least 8 characters"}
-              </div>
-              <div className="login-input-show-password" onClick={toggleHide}>
-                Show Password
-              </div>
-            </div>
-            <button className="login-button" onClick={registerButtonHandle}>
-              <span className="login-button-text">Create new account</span>
-            </button>
-            <div className="signup-alternative">
-              Already have an account?
-              <a className="signup-alternative-link" href="/login">
-                Log in
-              </a>
-            </div>
+          <div className="input-show-password" onClick={toggleHide}>
+            Show
           </div>
         </div>
+        <button
+          className="auth-button slide-center-button"
+          onClick={registerButtonHandle}
+        >
+          Create new account
+        </button>
       </div>
     </div>
   );

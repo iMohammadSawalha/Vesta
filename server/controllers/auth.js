@@ -8,25 +8,29 @@ const {
   generateAccessRefreshToken,
   deleteRefreshToken,
 } = require("./tokens");
+const { getDefaultWorkspaceByEmailHelper } = require("./workspace");
+const avatarGen = require("../helpers/avatarUrlGen");
 
 const register = async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-  if (!isEmail.test(email)) return res.sendStatus(400);
-  if (!isPassword.test(password)) return res.sendStatus(400);
+  if (!email || !isEmail.test(email)) return res.sendStatus(400);
+  if (!password || !isPassword.test(password)) return res.sendStatus(400);
   if (await findUserWithEmail(email)) return res.sendStatus(409);
   const salt = Number(process.env.PASSWORD_SALT_ROUNDS);
   const hashedPassword = await bcrypt.hash(password, salt);
+  const image = avatarGen({ name: email });
   const user = new userModel({
     email,
     password: hashedPassword,
+    image,
   });
   await user.save();
   res.sendStatus(201);
 };
 
 const findUserWithEmail = async (email) => {
-  const result = await userModel.findOne({ email: email }).exec();
+  const result = await userModel.findOne({ email: email }).lean().exec();
   if (!result) return false;
   return result;
 };
@@ -51,7 +55,12 @@ const login = async (req, res) => {
       expires: expirationDate,
       httpOnly: true,
     });
-    res.json({ accessToken: accessToken });
+    const defaultWorkspace = await getDefaultWorkspaceByEmailHelper(userEmail);
+    res.json({
+      accessToken: accessToken,
+      ...defaultWorkspace,
+      avatar: userFound.image,
+    });
   } catch {
     res.sendStatus(500);
   }
