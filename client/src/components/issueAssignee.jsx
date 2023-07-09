@@ -65,6 +65,7 @@ const IssueAssigneeMenu = ({
           className="open-assignees-menu-button"
         >
           <img
+            style={{ borderRadius: "50%" }}
             width={width}
             height={height}
             src={issueObj?.assignee?.image || userImage}
@@ -93,7 +94,12 @@ const IssueAssigneeMenu = ({
           className="assignees-menu-item"
           onClick={() => saveIssueRequest(null)}
         >
-          <img width={22} height={22} src={userImage} />
+          <img
+            width={22}
+            height={22}
+            src={userImage}
+            style={{ borderRadius: "50%" }}
+          />
           <span style={{ marginLeft: "0.5rem" }}>No assignee</span>
         </MenuItem>
         {issues.members.map((member) => (
@@ -101,7 +107,12 @@ const IssueAssigneeMenu = ({
             className="assignees-menu-item"
             onClick={() => saveIssueRequest(member.user)}
           >
-            <img width={22} height={22} src={member.user.image} />
+            <img
+              width={22}
+              height={22}
+              src={member.user.image}
+              style={{ borderRadius: "50%" }}
+            />
             <span style={{ marginLeft: "0.5rem" }}>{member.user.email}</span>
           </MenuItem>
         ))}

@@ -1,0 +1,30 @@
+.profile-container {
+  cursor: default;
+  color: white;
+  height: 100vh;
+  background: radial-gradient(
+    ellipse at bottom,
+    rgb(32, 34, 46) 0%,
+    rgb(18, 19, 26) 100%
+  );
+}
+.profile-content {
+  display: flex;
+  flex-direction: column;
+  padding-left: 5%;
+  padding-right: 5%;
+  padding-top: 10%;
+}
+.photo-upload-input {
+  position: absolute;
+  opacity: 0;
+  z-index: -1;
+}
+.photo-upload-preview-img {
+  border: 2px solid transparent;
+  border-radius: 50%;
+}
+.photo-upload-preview-img:hover {
+  border: 2px solid rgb(100, 91, 255);
+  background-color: rgba(99, 99, 99, 0.096);
+}

@@ -21,6 +21,9 @@ const CreateWorkspace = () => {
   const { setAuth } = useAuth();
   const navigate = useNavigate();
   const controller = new AbortController();
+  useEffect(() => {
+    document.title = "Create new Workspace";
+  }, []);
   const createWorkspaceHandle = async () => {
     if (!isValidWorkspaceName.test(workspaceName)) {
       setNameError(true);

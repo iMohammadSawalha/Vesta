@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 require("dotenv").config();
-const auth = require("./routes/auth");
+const user = require("./routes/user");
 const workspace = require("./routes/workspace");
 const issue = require("./routes/issue");
 const mongoose = require("mongoose");
@@ -14,11 +14,11 @@ const cors = require("cors");
 app.use(
   cors({
     credentials: true,
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173", "http://localhost:4173"],
   })
 );
 
-app.use("/api/auth", auth);
+app.use("/api/user", user);
 app.use("/api/workspace", workspace);
 app.use("/api/issue", issue);
 mongoose

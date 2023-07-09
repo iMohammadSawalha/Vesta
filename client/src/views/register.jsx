@@ -4,7 +4,7 @@ import { isEmail, isPassword } from "../helpers/global";
 import { useNavigate } from "react-router-dom";
 import axios from "../api/axios";
 import useAuth from "../hooks/useAuth";
-const REGISTER_URL = "/api/auth/register";
+const REGISTER_URL = "/api/user/register";
 const Register = () => {
   const { auth } = useAuth();
   const [hidden, setHidden] = useState(true);
@@ -15,6 +15,9 @@ const Register = () => {
   const [typing, setTyping] = useState(false);
   const from = location.state?.from?.pathname || "/";
   const navigate = useNavigate();
+  useEffect(() => {
+    document.title = "Create new account";
+  }, []);
   const saveEmail = (target) => {
     setEmail(target.value);
     setErrorEmail(false);

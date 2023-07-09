@@ -1,4 +1,4 @@
-import { Outlet, useNavigate, useParams } from "react-router-dom";
+import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "./workspace.css";
 import Sidebar from "../components/sidebar";
@@ -17,16 +17,19 @@ const WorkSpace = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [unauthorized, setUnauthorized] = useState(false);
-  const { setAuth, setIssues } = useAuth();
+  const { auth, setAuth, setIssues } = useAuth();
   const navigate = useNavigate();
-
+  useEffect(() => {
+    const workspaces = auth.workspaces;
+    const workspace = workspaces.find((workspace) => workspace.url_id === url);
+    document.title = `${workspace.name} Workspace`;
+  }, []);
   const signOut = async () => {
     await setAuth({});
     const logout = useLogout();
     await logout();
     navigate("/");
   };
-
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
@@ -72,7 +75,10 @@ const WorkSpace = () => {
   const toggleSidebar = () => {
     sidebarActive ? setSidebarActive(false) : setSidebarActive(true);
   };
-
+  const location = useLocation();
+  useEffect(() => {
+    setSidebarActive(false);
+  }, [location.pathname]);
   if (isLoading) return <Loading />;
 
   if (notFound) return <WorkspaceNotFound />;

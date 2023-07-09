@@ -9,6 +9,7 @@ const Landing = () => {
   const navigate = useNavigate();
   const { auth } = useAuth();
   useEffect(() => {
+    document.title = "Vesta";
     if (auth.accessToken) return navigate("/workspace/default");
     setRedirecting(false);
   }, []);

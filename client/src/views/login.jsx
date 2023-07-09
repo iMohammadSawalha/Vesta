@@ -9,11 +9,11 @@ import useToggle from "../hooks/useToggle";
 
 import axios from "../api/axios";
 import { LinearProgress, Snackbar } from "@mui/material";
-const LOGIN_URL = "/api/auth/login";
+const LOGIN_URL = "/api/user/login";
 const Login = () => {
   const { auth, setAuth } = useAuth();
   const navigate = useNavigate();
-  const from = location.state?.from?.pathname || "/";
+  const from = "/";
 
   const [hidden, setHidden] = useState(true);
   const [email, reset, emailAttrs] = useInput("email", "");
@@ -25,6 +25,7 @@ const Login = () => {
   const [errorLogin, setErrorLogin] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
   const closeErrorMessage = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -65,6 +66,7 @@ const Login = () => {
         accessToken,
         workspaces: response?.data?.workspaces,
         defaultWorkspace: response?.data?.defaultWorkspace,
+        user: response?.data?.user,
       });
       navigate("/", { replace: true });
     } catch (error) {
@@ -95,6 +97,7 @@ const Login = () => {
     }
   }, [email, password, submitting]);
   useEffect(() => {
+    document.title = "Sign in";
     if (auth?.accessToken) navigate(from, { replace: true });
   }, []);
   return (

@@ -6,6 +6,7 @@ const NotFound = () => {
   let createStarInterval;
   const navigate = useNavigate();
   useEffect(() => {
+    document.title = "Not found 404";
     createStarInterval = setInterval(createStar, 100);
 
     return () => {

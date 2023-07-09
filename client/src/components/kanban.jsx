@@ -4,7 +4,6 @@ import IssueColumn from "./columns";
 import useAuth from "../hooks/useAuth";
 import { axiosPrivate } from "../api/axios";
 import { useParams } from "react-router-dom";
-import { useRef } from "react";
 const Kanban = () => {
   const { setIssues } = useAuth();
   const { url } = useParams();

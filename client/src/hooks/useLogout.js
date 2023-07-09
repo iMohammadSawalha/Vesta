@@ -3,7 +3,7 @@ import axios from "../api/axios";
 const useLogout = () => {
   const logout = async () => {
     try {
-      const response = axios.post("api/auth/logout", {
+      const response = axios.post("api/user/logout", {
         withCredentials: true,
       });
     } catch (error) {

@@ -4,7 +4,6 @@ import { useState } from "react";
 import useAuth from "../hooks/useAuth";
 import { Link } from "react-router-dom";
 import DeleteWorkspaceModal from "./deleteWorkspaceModal";
-import AvatarGen from "./avatarGen";
 
 const WorkspacesMenu = () => {
   const { auth, setAuth } = useAuth();

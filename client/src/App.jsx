@@ -9,7 +9,7 @@ import DefaultWorkspace from "./components/defaultWorkspace";
 import CreateWorkspace from "./views/createWorkspace";
 import Kanban from "./components/kanban";
 import IssueBigScreen from "./components/issueBigScreen";
-import AvatarGen from "./components/avatarGen";
+import Profile from "./views/profile";
 function App() {
   return (
     <Routes>
@@ -26,6 +26,7 @@ function App() {
           />
           <Route path="/:url" element={<WorkSpace />}>
             <Route index element={<Kanban />} />
+            <Route path="/:url/profile" element={<Profile />} />
             <Route path="/:url/:id" element={<IssueBigScreen />} />
           </Route>
         </Route>

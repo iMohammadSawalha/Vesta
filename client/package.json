@@ -17,6 +17,7 @@
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",
+    "react-easy-crop": "^5.0.0",
     "react-quill": "^2.0.0",
     "react-router-dom": "^6.12.1"
   },

@@ -1,6 +1,7 @@
 const refreshTokenModel = require("../models/refreshToken");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const userModel = require("../models/user");
 const { getDefaultWorkspaceByEmailHelper } = require("./workspace");
 
 const generateAccessToken = (user) => {
@@ -46,10 +47,21 @@ const authRefreshToken = async (req, res) => {
         if (!(await refreshTokenExists(refreshToken, email)))
           return res.sendStatus(403);
         const accessToken = generateAccessToken({
-          email: user.email,
+          email: email,
         });
         const defaultWorkspace = await getDefaultWorkspaceByEmailHelper(email);
-        res.json({ accessToken: accessToken, ...defaultWorkspace });
+        const userData = await userModel
+          .findOne({ email: email })
+          .lean()
+          .exec();
+        res.json({
+          accessToken: accessToken,
+          ...defaultWorkspace,
+          user: {
+            image: userData.image,
+            email: userData.email,
+          },
+        });
       }
     );
   } catch {

@@ -33,10 +33,12 @@ const Sidebar = ({ active, signOut }) => {
           to={"/" + auth.defaultWorkspace.url_id}
           icon={<SquareRound sx={IS} />}
         />
+        <SidebarButton content="My issues" icon={<SquareRound sx={IS} />} />
         <SidebarButton
-          content="My issues"
+          content="Profile"
           icon={<SquareRound sx={IS} />}
           style={{ marginBottom: "auto" }}
+          to={"profile"}
         />
         <button
           class="logout-button-a logout-button-a-sidebar-custom"
