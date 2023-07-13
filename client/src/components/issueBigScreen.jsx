@@ -18,8 +18,7 @@ import IssueAssigneeMenu from "./issueAssignee";
 import userImage from "../assets/images/user.png";
 const IssueBigScreen = () => {
   const navigate = useNavigate();
-  const axiosPrivate = useAxiosPrivate();
-  const { issues, setIssues } = useAuth();
+  const { issues, socket } = useAuth();
   const { id, url } = useParams();
   const issueObj = issues.issues.find((issue) => issue.id === id);
   const [title, setTitle] = useState(issueObj?.title);
@@ -29,11 +28,13 @@ const IssueBigScreen = () => {
     statusList.indexOf(issueObj?.status)
   );
   const [anchorEl, setAnchorEl] = useState(null);
-
-  const saveIssueRequest = async () => {
+  const errorHandler = (error) => {
+    console.log(error.message);
+  };
+  const saveIssueRequest = () => {
     try {
-      const response = await axiosPrivate.post(
-        "/api/issue/edit",
+      socket.emit(
+        "edit_issue",
         {
           url: url,
           issue: {
@@ -43,30 +44,8 @@ const IssueBigScreen = () => {
             status: statusList[selectedIndex],
           },
         },
-        {
-          "Content-Type": "application/json",
-          withCredentials: true,
-        }
+        errorHandler
       );
-      const newState = JSON.parse(JSON.stringify(issues));
-      const issueToUpdate = newState.issues.find((issue) => issue.id === id);
-      issueToUpdate.title = title;
-      issueToUpdate.description = description;
-      if (statusList[selectedIndex] != issueToUpdate.status) {
-        const columnToUpdateFrom = newState.columns.find(
-          (column) => column.id === issueToUpdate.status
-        );
-        columnToUpdateFrom.issues.splice(
-          columnToUpdateFrom.issues.indexOf(id),
-          1
-        );
-        const columnToUpdateTo = newState.columns.find(
-          (column) => column.id === statusList[selectedIndex]
-        );
-        columnToUpdateTo.issues.splice(0, 0, id);
-        issueToUpdate.status = statusList[selectedIndex];
-      }
-      setIssues(newState);
       navigate("/");
     } catch (error) {
       //TODO ERROR MESSAGE HANDLE
@@ -84,7 +63,7 @@ const IssueBigScreen = () => {
       }
       return;
     }
-    await saveIssueRequest();
+    saveIssueRequest();
   };
   if (!issueObj) return <IssueNotFound id={id} />;
   return (

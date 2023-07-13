@@ -9,7 +9,6 @@ import { Alert, Avatar, Chip } from "@mui/material";
 import { modulesQuill, formatsQuill } from "../helpers/global";
 import { notEmptyString } from "../helpers/global";
 import useAuth from "../hooks/useAuth";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { useParams } from "react-router-dom";
 const AddIssueModal = ({
   columnStatus,
@@ -18,8 +17,7 @@ const AddIssueModal = ({
   setModalTrigger,
 }) => {
   const { url } = useParams();
-  const axiosPrivate = useAxiosPrivate();
-  const { issues, setIssues } = useAuth();
+  const { issues, socket, setIssues } = useAuth();
   const [description, setDescription] = useState("");
   const [title, setTitle] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(
@@ -34,12 +32,14 @@ const AddIssueModal = ({
     setOpen(false);
     setSelectedIndex(initialIndex);
   };
-  const addIssueRequest = async () => {
+  const errorHandler = (error) => {
+    console.log(error.message);
+  };
+  const addIssueRequest = () => {
     try {
-      const newState = JSON.parse(JSON.stringify(issues));
-      const newStateId = newState.symbol + "-" + newState.id_counter;
-      const response = await axiosPrivate.post(
-        "/api/issue/add",
+      const newStateId = issues.symbol + "-" + issues.id_counter;
+      socket.emit(
+        "add_issue",
         {
           url: url,
           issue: {
@@ -47,31 +47,10 @@ const AddIssueModal = ({
             status: statusList[selectedIndex],
             title: title,
             description: description,
-            // parent: parentid,
           },
         },
-        {
-          "Content-Type": "application/json",
-          withCredentials: true,
-        }
+        errorHandler
       );
-      const newIssue = {
-        id: newStateId,
-        status: statusList[selectedIndex],
-        title: title,
-        description: description,
-        // parent: parentid,
-      };
-      newState.issues.push(newIssue);
-      const columnToUpdate = newState.columns.find(
-        (column) => column.id === statusList[selectedIndex]
-      );
-      columnToUpdate.issues.push(newStateId);
-      newState.id_counter += 1;
-      setIssues(newState);
-      setDescription("");
-      setTitle("");
-      handleClose();
     } catch (error) {
       //TODO ERROR MESSAGE HANDLE
       console.log(error);
@@ -89,7 +68,10 @@ const AddIssueModal = ({
 
       return;
     }
-    await addIssueRequest();
+    addIssueRequest();
+    setDescription("");
+    setTitle("");
+    handleClose();
   };
   useEffect(() => {
     if (openModalTrigger) {

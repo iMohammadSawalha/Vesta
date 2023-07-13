@@ -1,7 +1,12 @@
-import { Menu, MenuItem } from "@mui/material";
+import {
+  Badge,
+  Menu,
+  MenuItem,
+  ThemeProvider,
+  createTheme,
+} from "@mui/material";
 import useAuth from "../hooks/useAuth";
 import userImage from "../assets/images/user.png";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { useParams } from "react-router-dom";
 const IssueAssigneeMenu = ({
   id,
@@ -15,19 +20,35 @@ const IssueAssigneeMenu = ({
   if (!width) width = 25;
   if (!height) height = 25;
   const { url } = useParams();
-  const axiosPrivate = useAxiosPrivate();
-  const { issues, setIssues } = useAuth();
+  const { issues, setIssues, socket, onlineUsers } = useAuth();
   let WrokspaceMenuOpen = Boolean(anchorEl);
   const closeWorkspaceMenuHandle = () => {
     setAnchorEl(null);
   };
   const issueObj = issues.issues.find((issue) => issue.id === id);
+  const errorHandler = (error) => {
+    console.log(error.message);
+  };
   const saveIssueRequest = async (assignee) => {
     let assigneeID = assignee?._id;
     if (!assignee?._id) assigneeID = null;
     try {
-      const response = await axiosPrivate.post(
-        "/api/issue/edit",
+      // const response = await axiosPrivate.post(
+      //   "/api/issue/edit",
+      //   {
+      //     url: url,
+      //     issue: {
+      //       id: id,
+      //       assignee: assigneeID,
+      //     },
+      //   },
+      //   {
+      //     "Content-Type": "application/json",
+      //     withCredentials: true,
+      //   }
+      // );
+      socket.emit(
+        "change_assignee",
         {
           url: url,
           issue: {
@@ -35,10 +56,7 @@ const IssueAssigneeMenu = ({
             assignee: assigneeID,
           },
         },
-        {
-          "Content-Type": "application/json",
-          withCredentials: true,
-        }
+        errorHandler
       );
       const newState = JSON.parse(JSON.stringify(issues));
       const issueToUpdate = newState.issues.find((issue) => issue.id === id);
@@ -57,6 +75,16 @@ const IssueAssigneeMenu = ({
       console.log(error);
     }
   };
+  const theme = createTheme({
+    palette: {
+      success: {
+        main: "#50C878", // Replace with your desired color value
+      },
+      secondary: {
+        main: "#808080", // Replace with your desired color value
+      },
+    },
+  });
   return (
     <>
       {!menuButton && (
@@ -64,6 +92,19 @@ const IssueAssigneeMenu = ({
           onClick={openWorkspaceMenuHandle}
           className="open-assignees-menu-button"
         >
+          <ThemeProvider theme={theme}>
+            {issueObj?.assignee?.image && (
+              <Badge
+                color={
+                  onlineUsers.includes(issueObj?.assignee?.email)
+                    ? "success"
+                    : "secondary"
+                }
+                variant="dot"
+                className="assignee-online-status-dot"
+              />
+            )}
+          </ThemeProvider>
           <img
             style={{ borderRadius: "50%" }}
             width={width}

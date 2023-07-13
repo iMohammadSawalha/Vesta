@@ -1,5 +1,5 @@
 import "./settings.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import userImage from "../assets/images/user.png";
 import ImageCropModal from "../components/imageCrop";

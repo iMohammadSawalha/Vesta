@@ -2,10 +2,9 @@ import { flushSync } from "react-dom";
 import { DragDropContext } from "react-beautiful-dnd";
 import IssueColumn from "./columns";
 import useAuth from "../hooks/useAuth";
-import { axiosPrivate } from "../api/axios";
 import { useParams } from "react-router-dom";
 const Kanban = () => {
-  const { setIssues } = useAuth();
+  const { setIssues, socket } = useAuth();
   const { url } = useParams();
   const moveIssueClient = (issueId, sColumn, sIndex, dColumn, dIndex) => {
     flushSync(() => {
@@ -32,7 +31,9 @@ const Kanban = () => {
       });
     });
   };
-
+  const errorHandler = (error) => {
+    console.log(error.message);
+  };
   const moveIssueRequest = async (
     issueId,
     sColumn,
@@ -41,8 +42,8 @@ const Kanban = () => {
     dIndex
   ) => {
     try {
-      const response = await axiosPrivate.post(
-        "/api/issue/move",
+      socket.emit(
+        "move_issue",
         {
           url: url,
           id: issueId,
@@ -51,18 +52,13 @@ const Kanban = () => {
           dColumn: dColumn,
           dIndex: dIndex,
         },
-        {
-          "Content-Type": "application/json",
-          withCredentials: true,
-        }
+        errorHandler
       );
     } catch (error) {
-      //UNDO THE MOVEING IN CLIENT
-      moveIssueClient(issueId, dColumn, dIndex, sColumn, sIndex);
+      console.log(error);
       //TODO ERROR MESSAGE HANDLE
     }
   };
-
   const handleOnDragEnd = async (result) => {
     if (result.reason == "CANCEL") return;
     if (!result.destination) return;

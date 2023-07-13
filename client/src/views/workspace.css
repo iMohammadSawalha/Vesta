@@ -422,3 +422,8 @@ button .ql-fill,
 .issue-status-inner-menu-big-screen .Mui-selected {
   background-color: #6c6186 !important;
 }
+.assignee-online-status-dot {
+  position: absolute !important;
+  right: 15%;
+  top: 15%;
+}
