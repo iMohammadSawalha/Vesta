@@ -19,7 +19,7 @@ const addIssue = async (data) => {
     );
     columnToUpdate.issues.push(newIssue.id);
     workspace.id_counter += 1;
-    workspace.save();
+    await workspace.save();
     return 201;
   } catch {
     return 500;
@@ -57,7 +57,7 @@ const moveIssue = async (data) => {
     } else {
       fromColumn.issues.splice(dIndex, 0, id);
     }
-    workspace.save();
+    await workspace.save();
     return 204;
   } catch {
     return 500;
@@ -91,7 +91,7 @@ const editIssue = async (data) => {
         columnToUpdateTo.issues.splice(0, 0, newIssue.id);
       }
     Object.assign(issueToUpdate, newIssue);
-    workspace.save();
+    await workspace.save();
     return 204;
   } catch {
     return 500;
@@ -142,7 +142,7 @@ const deleteIssue = async (data) => {
     if (indexInIssues === -1 || indexInColumn === -1) return 404;
     columnToUpdate.issues.splice(indexInColumn, 1);
     workspace.issues.splice(indexInIssues, 1);
-    workspace.save();
+    await workspace.save();
     return 204;
   } catch {
     return 500;

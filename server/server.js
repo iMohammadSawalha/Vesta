@@ -55,12 +55,11 @@ io.on("connection", async (socket) => {
   socket.on("disconnect", () => {
     const disconnectUser = () => {
       let newArray = [...onlineUsers];
-      newArray = newArray.filter((array_email) => {
-        return array_email != user.email;
-      });
+      const index = newArray.indexOf(user.email);
+      newArray.splice(index, 1);
       onlineUsers = newArray;
       if (!socket.rooms.has(socket.handshake?.auth?.url)) {
-        socket.to(socket.handshake?.auth?.url).emit("user_offline", user.email);
+        socket.to(socket.handshake?.auth?.url).emit("onlineList", onlineUsers);
       }
       console.log(`${user.email} disconnected`);
     };
@@ -72,20 +71,13 @@ io.on("connection", async (socket) => {
     socket.handshake?.auth?.url
   );
   if (response !== 200) {
-    joined(null, { message: response }, null);
     socket.disconnect();
     return;
   }
   onlineUsers = [...onlineUsers, user.email];
-  const status = {
-    joined: "yes",
-    error: null,
-    onlineUsers: onlineUsers,
-  };
-  socket.emit("joined_workspace", status);
+  socket.emit("onlineList", onlineUsers);
   socket.join(socket.handshake?.auth?.url);
-  console.log(`${user.email} Authorized`);
-  socket.to(socket.handshake?.auth?.url).emit("user_online", user.email);
+  socket.to(socket.handshake?.auth?.url).emit("onlineList", onlineUsers);
   SocketIoIssue(io, socket);
 });
 const port = 3000;

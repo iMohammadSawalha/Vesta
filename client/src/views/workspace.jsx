@@ -20,14 +20,13 @@ const WorkSpace = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [unauthorized, setUnauthorized] = useState(false);
-  const [joined, setJoined] = useState("no");
   const [reconnectSocket, setReconnectSocket] = useState(0);
 
   const refresh = useRefreshToken();
   const { auth, setAuth, setIssues, setSocket, socket, setOnlineUsers } =
     useAuth();
   useEffect(() => {
-    if (reconnectSocket > 5) signOut();
+    if (reconnectSocket > 3) return;
     const newSocket = io("http://localhost:3000", {
       auth: {
         accessToken: auth.accessToken,
@@ -45,14 +44,6 @@ const WorkSpace = () => {
   }, []);
   useEffect(() => {
     if (!socket) return;
-    const joinStatus = (status, error, onlineUsers) => {
-      if (status === "yes") setJoined(status);
-      if (error) errorHandler(error);
-      if (onlineUsers) setOnlineUsers(onlineUsers);
-    };
-    socket.on("joined_workspace", (data) => {
-      joinStatus(data.joined, data.error, data.onlineUsers);
-    });
     socket.on("add_issue", (data) => {
       setIssues((prev) => {
         const prevState = JSON.parse(JSON.stringify(prev));
@@ -165,21 +156,10 @@ const WorkSpace = () => {
         return newIssues;
       });
     });
-    socket.on("user_online", (email) => {
-      setOnlineUsers((prev) => {
-        return [...prev, email];
-      });
+    socket.on("onlineList", (list) => {
+      setOnlineUsers(list);
     });
-    socket.on("user_offline", (email) => {
-      setOnlineUsers((prev) => {
-        let newArray = [...prev];
-        newArray = newArray.filter((array_email) => {
-          return array_email != email;
-        });
-        return newArray;
-      });
-    });
-  }, [socket, joined]);
+  }, [socket]);
   const signOut = async () => {
     await setAuth({});
     const logout = useLogout();

@@ -11,21 +11,19 @@ const generateAccessRefreshToken = (user) => {
   return jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
 };
 
-const deleteRefreshToken = async (token, userEmail) => {
-  const found = await refreshTokenExists(token, userEmail);
+const deleteRefreshToken = async (token, uuid) => {
+  const found = await refreshTokenExists(token, uuid);
   if (!found) return;
-  await refreshTokenModel.deleteOne({ user_email: userEmail });
+  await refreshTokenModel.deleteOne({ uuid: uuid });
 };
 
-const fetchRefreshToken = async (userEmail) => {
-  const result = await refreshTokenModel
-    .findOne({ user_email: userEmail })
-    .exec();
+const fetchRefreshToken = async (uuid) => {
+  const result = await refreshTokenModel.findOne({ uuid: uuid }).exec();
   if (!result) return false;
   return result;
 };
-const refreshTokenExists = async (token, userEmail) => {
-  const data = await fetchRefreshToken(userEmail);
+const refreshTokenExists = async (token, uuid) => {
+  const data = await fetchRefreshToken(uuid);
   if (!data) return false;
   return await compareRefreshToken(token, data.token);
 };
@@ -37,6 +35,7 @@ const authRefreshToken = async (req, res) => {
   try {
     const cookies = req.cookies;
     const refreshToken = cookies?.refreshToken;
+    const uuid = cookies?.uuid;
     if (!refreshToken) return res.sendStatus(401);
     jwt.verify(
       refreshToken,
@@ -44,7 +43,7 @@ const authRefreshToken = async (req, res) => {
       async (error, user) => {
         if (error) return res.sendStatus(403);
         const email = user.email;
-        if (!(await refreshTokenExists(refreshToken, email)))
+        if (!(await refreshTokenExists(refreshToken, uuid)))
           return res.sendStatus(403);
         const accessToken = generateAccessToken({
           email: email,
@@ -69,11 +68,11 @@ const authRefreshToken = async (req, res) => {
   }
 };
 
-const storeRefreshToken = async (token, userEmail) => {
+const storeRefreshToken = async (token, uuid) => {
   const salt = Number(process.env.TOKEN_HASH_SALT_ROUNDS);
   const hashedRefreshToken = await bcrypt.hash(token, salt);
   const refreshToken = new refreshTokenModel({
-    user_email: userEmail,
+    uuid: uuid,
     token: hashedRefreshToken,
   });
   await refreshToken.save();

@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { isEmail, isPassword } = require("../helpers/regex");
 const userModel = require("../models/user");
+const crypto = require("crypto");
 const {
   storeRefreshToken,
   generateAccessToken,
@@ -49,9 +50,14 @@ const login = async (req, res) => {
     const user = { email: userEmail };
     const accessToken = generateAccessToken(user);
     const refreshToken = generateAccessRefreshToken(user);
-    await storeRefreshToken(refreshToken, userEmail);
+    const uuid = crypto.randomUUID();
+    await storeRefreshToken(refreshToken, uuid);
     const expirationDate = new Date();
     expirationDate.setTime(expirationDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+    res.cookie("uuid", uuid, {
+      expires: expirationDate,
+      httpOnly: true,
+    });
     res.cookie("refreshToken", refreshToken, {
       expires: expirationDate,
       httpOnly: true,
@@ -74,21 +80,12 @@ const logout = async (req, res) => {
   try {
     const cookies = req.cookies;
     const refreshToken = cookies?.refreshToken;
+    const uuid = uuid?.refreshToken;
     if (!refreshToken) return res.sendStatus(204);
-    jwt.verify(
-      refreshToken,
-      process.env.REFRESH_TOKEN_SECRET,
-      async (error, user) => {
-        if (error) {
-          res.clearCookie("refreshToken", { httpOnly: true });
-          return res.sendStatus(204);
-        }
-        const email = user.email;
-        await deleteRefreshToken(refreshToken, email);
-        res.clearCookie("refreshToken", { httpOnly: true });
-        return res.sendStatus(204);
-      }
-    );
+    await deleteRefreshToken(refreshToken, uuid);
+    res.clearCookie("refreshToken", { httpOnly: true });
+    res.clearCookie("uuid", { httpOnly: true });
+    return res.sendStatus(204);
   } catch {
     res.sendStatus(500);
   }
