@@ -61,7 +61,7 @@ io.on("connection", async (socket) => {
       if (!socket.rooms.has(socket.handshake?.auth?.url)) {
         socket.to(socket.handshake?.auth?.url).emit("onlineList", onlineUsers);
       }
-      console.log(`${user.email} disconnected`);
+      console.log(`${user.email} Disconnected`);
     };
     disconnectUser();
   });

@@ -6,7 +6,7 @@ import ImageCropModal from "../components/imageCrop";
 import useAuth from "../hooks/useAuth";
 import { Alert, Snackbar } from "@mui/material";
 const Profile = () => {
-  const { auth, setAuth } = useAuth();
+  const { auth, setAuth, setIssues } = useAuth();
   const axiosPrivate = useAxiosPrivate();
   const [uploadedImage, setUploadedImage] = useState(null);
   const [imageData, setImageData] = useState(null);
@@ -33,13 +33,23 @@ const Profile = () => {
         })
       );
       setAuth((prev) => {
-        return {
-          ...prev,
-          user: {
-            email: prev.user.email,
-            image: response?.data?.image,
-          },
-        };
+        const newState = JSON.parse(JSON.stringify(prev));
+        newState.user.image = response?.data?.image;
+        return newState;
+      });
+      setIssues((prev) => {
+        const email = auth.user.email;
+        const newState = JSON.parse(JSON.stringify(prev));
+        const member = newState.members.find(
+          (member) => member?.user?.email === email
+        );
+        member.user.image = response?.data?.image;
+        newState.issues.forEach((issue) => {
+          if (issue.assignee.email === email) {
+            issue.assignee.image = response?.data?.image;
+          }
+        });
+        return newState;
       });
       setIsUploading(false);
       setResponseCode(200);
