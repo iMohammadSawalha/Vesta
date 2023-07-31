@@ -21,7 +21,11 @@ const register = async (req, res) => {
   if (await findUserWithEmail(email)) return res.sendStatus(409);
   const salt = Number(process.env.PASSWORD_SALT_ROUNDS);
   const hashedPassword = await bcrypt.hash(password, salt);
-  const image = req.body.image || avatarGen({ name: email });
+  let image = avatarGen({ name: email });
+  if (req.body.image) {
+    const imageUpload = await uploadImage(req.body.image);
+    image = imageUpload.url;
+  }
   const user = new userModel({
     email,
     password: hashedPassword,
@@ -80,7 +84,7 @@ const logout = async (req, res) => {
   try {
     const cookies = req.cookies;
     const refreshToken = cookies?.refreshToken;
-    const uuid = uuid?.refreshToken;
+    const uuid = cookies?.uuid;
     if (!refreshToken) return res.sendStatus(204);
     await deleteRefreshToken(refreshToken, uuid);
     res.clearCookie("refreshToken", { httpOnly: true });
