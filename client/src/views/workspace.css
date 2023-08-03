@@ -427,3 +427,31 @@ button .ql-fill,
   right: 15%;
   top: 15%;
 }
+.invite-form ul {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.invite-form li {
+  padding: 0 !important;
+  min-height: unset !important;
+  color: white;
+  height: fit-content !important;
+  border-radius: 5px;
+}
+.invite-forum-input{
+  margin-top: 0.5rem;
+  outline: 0;
+  background-color: transparent;
+  border: 0;
+  color: white;
+  font-size: medium;
+}
+.invite-forum-input::placeholder{
+  color:rgb(165, 165, 165);
+}
+.add-to-workspace-button{
+  margin-top: 1rem;
+  height: 30px !important;
+  width: 100%;
+}

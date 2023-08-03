@@ -4,11 +4,15 @@ const {
   getWorkspace,
   createWorkspace,
   deleteWorkspace,
+  invite,
 } = require("../controllers/workspace");
 const { authenticateToken } = require("../middleware/tokenAuth");
+const { hasWrokspaceAccess } = require("../middleware/wrokspaceAuth");
 router.use(authenticateToken);
+router.use(hasWrokspaceAccess);
 
 router.post("/", getWorkspace);
 router.post("/new", createWorkspace);
 router.post("/delete", deleteWorkspace);
+router.post("/invite", hasWrokspaceAccess, invite);
 module.exports = router;

@@ -12,7 +12,6 @@ import { Alert, Avatar, Chip } from "@mui/material";
 import { Plus } from "./icons";
 import DeleteIssueModal from "./deleteIssueModal";
 import useAuth from "../hooks/useAuth";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import IssueNotFound from "./issueNotFound";
 import IssueAssigneeMenu from "./issueAssignee";
 import userImage from "../assets/images/user.png";

@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const workspaceModel = require("../models/workspace");
 const userModel = require("../models/user");
 const avatarGen = require("../helpers/avatarUrlGen");
+const { isEmail } = require("../helpers/regex");
 
 const getWorkspace = async (req, res) => {
   try {
@@ -160,10 +161,36 @@ const deleteWorkspace = async (req, res) => {
     res.sendStatus(500);
   }
 };
-
+const invite = async (req, res) => {
+  try {
+    const email = req.body.email;
+    const url = req.body.url;
+    if (!email) return res.sendStatus(400);
+    if (!url) return res.sendStatus(400);
+    if (!isEmail.test(email)) return res.sendStatus(400);
+    const userData = await userModel.findOne({ email: email }).exec();
+    const workspaceData = await workspaceModel
+      .findOne({ url_id: url })
+      .populate([{ path: "members.user", select: "email" }])
+      .exec();
+    const isMember = workspaceData.members.some(
+      (member) => member.user.email === email
+    );
+    if (isMember) return res.sendStatus(200);
+    workspaceData.depopulate("members.user");
+    workspaceData.members.push({ user: userData._id, role: "member" });
+    userData.workspaces.push(workspaceData._id);
+    await userData.save();
+    await workspaceData.save();
+    res.sendStatus(201);
+  } catch {
+    res.sendStatus(500);
+  }
+};
 module.exports = {
   getWorkspace,
   createWorkspace,
   getDefaultWorkspaceByEmailHelper,
   deleteWorkspace,
+  invite,
 };
