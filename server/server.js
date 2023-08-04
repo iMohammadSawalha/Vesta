@@ -4,15 +4,16 @@ const http = require("http");
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const cors = require("cors");
+require("dotenv").config();
 app.use(
   cors({
     credentials: true,
-    origin: ["http://localhost:5173", "http://localhost:4173"],
+    origin: JSON.parse(process.env.ORIGINS),
   })
 );
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173", "http://localhost:4173"],
+    origin: JSON.parse(process.env.ORIGINS),
   },
 });
 const user = require("./routes/user");
@@ -25,7 +26,6 @@ const {
   workspaceAuthSocketIo,
 } = require("./middleware/socket.ioWorkspaceAuth");
 
-require("dotenv").config();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -36,6 +36,7 @@ app.use("/api/workspace", workspace);
 
 const SocketIoIssue = require("./socket.ioRoutes/issue");
 const { decodeJWT } = require("./helpers/jwt");
+const { type } = require("os");
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
