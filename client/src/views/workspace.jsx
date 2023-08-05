@@ -27,7 +27,7 @@ const WorkSpace = () => {
     useAuth();
   useEffect(() => {
     if (reconnectSocket > 3) return;
-    const newSocket = io("http://localhost:3000", {
+    const newSocket = io(import.meta.env.VITE_BASE_URL, {
       auth: {
         accessToken: auth.accessToken,
         url: url,
