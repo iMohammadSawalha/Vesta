@@ -14,7 +14,7 @@ const avatarGen = require("../helpers/avatarUrlGen");
 const uploadImage = require("../api/cloudinary");
 
 const register = async (req, res) => {
-  const email = req.body.email;
+  let email = req.body.email;
   const password = req.body.password;
   if (!email || !isEmail.test(email)) return res.sendStatus(400);
   email = email.toLowerCase();
@@ -44,7 +44,7 @@ const findUserWithEmail = async (email) => {
 
 const login = async (req, res) => {
   try {
-    const email = req.body.email;
+    let email = req.body.email;
     const password = req.body.password;
     if (!isEmail.test(email)) return res.sendStatus(400);
     email = email.toLowerCase();
