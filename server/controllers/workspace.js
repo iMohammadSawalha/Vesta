@@ -169,6 +169,7 @@ const invite = async (req, res) => {
     if (!url) return res.sendStatus(400);
     if (!isEmail.test(email)) return res.sendStatus(400);
     const userData = await userModel.findOne({ email: email }).exec();
+    if (!userData) return res.sendStatus(400);
     const workspaceData = await workspaceModel
       .findOne({ url_id: url })
       .populate([{ path: "members.user", select: "email" }])
