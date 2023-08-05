@@ -17,6 +17,7 @@ const register = async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   if (!email || !isEmail.test(email)) return res.sendStatus(400);
+  email = email.toLowerCase();
   if (!password || !isPassword.test(password)) return res.sendStatus(400);
   if (await findUserWithEmail(email)) return res.sendStatus(409);
   const salt = Number(process.env.PASSWORD_SALT_ROUNDS);
@@ -46,6 +47,7 @@ const login = async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
     if (!isEmail.test(email)) return res.sendStatus(400);
+    email = email.toLowerCase();
     const userFound = await findUserWithEmail(email);
     if (!userFound) return res.sendStatus(401);
     const matchPassword = await bcrypt.compare(password, userFound.password);
