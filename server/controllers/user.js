@@ -60,11 +60,15 @@ const login = async (req, res) => {
     expirationDate.setTime(expirationDate.getTime() + 7 * 24 * 60 * 60 * 1000);
     res.cookie("uuid", uuid, {
       expires: expirationDate,
+      secure: true,
       httpOnly: true,
+      sameSite: "none",
     });
     res.cookie("refreshToken", refreshToken, {
       expires: expirationDate,
+      secure: true,
       httpOnly: true,
+      sameSite: "none",
     });
     const defaultWorkspace = await getDefaultWorkspaceByEmailHelper(userEmail);
     res.json({
@@ -87,8 +91,12 @@ const logout = async (req, res) => {
     const uuid = cookies?.uuid;
     if (!refreshToken) return res.sendStatus(204);
     await deleteRefreshToken(refreshToken, uuid);
-    res.clearCookie("refreshToken", { httpOnly: true });
-    res.clearCookie("uuid", { httpOnly: true });
+    res.clearCookie("refreshToken", {
+      secure: true,
+      httpOnly: true,
+      sameSite: "none",
+    });
+    res.clearCookie("uuid", { secure: true, httpOnly: true, sameSite: "none" });
     return res.sendStatus(204);
   } catch {
     res.sendStatus(500);
