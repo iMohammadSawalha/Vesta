@@ -63,12 +63,14 @@ const login = async (req, res) => {
       secure: true,
       httpOnly: true,
       sameSite: "none",
+      domain: "vestaclient.netlify.app",
     });
     res.cookie("refreshToken", refreshToken, {
       expires: expirationDate,
       secure: true,
       httpOnly: true,
       sameSite: "none",
+      domain: "vestaclient.netlify.app",
     });
     const defaultWorkspace = await getDefaultWorkspaceByEmailHelper(userEmail);
     res.json({
@@ -95,8 +97,14 @@ const logout = async (req, res) => {
       secure: true,
       httpOnly: true,
       sameSite: "none",
+      domain: "vestaclient.netlify.app",
     });
-    res.clearCookie("uuid", { secure: true, httpOnly: true, sameSite: "none" });
+    res.clearCookie("uuid", {
+      secure: true,
+      httpOnly: true,
+      sameSite: "none",
+      domain: "vestaclient.netlify.app",
+    });
     return res.sendStatus(204);
   } catch {
     res.sendStatus(500);
