@@ -126,12 +126,13 @@ const IssueAssigneeMenu = ({
               width: "fit-content",
               padding: "0.5rem",
               backgroundColor: "rgb(39, 40, 53)",
-              boxShadow: "box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;",
+              boxShadow: "box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px",
             },
           },
         }}
       >
         <MenuItem
+          key={"null"}
           className="assignees-menu-item"
           onClick={() => saveIssueRequest(null)}
         >
@@ -145,6 +146,7 @@ const IssueAssigneeMenu = ({
         </MenuItem>
         {issues.members.map((member) => (
           <MenuItem
+            key={member.user}
             className="assignees-menu-item"
             onClick={() => saveIssueRequest(member.user)}
           >

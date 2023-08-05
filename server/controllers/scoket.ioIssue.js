@@ -2,7 +2,7 @@ const { isInteger } = require("../helpers/regex");
 const workspaceModel = require("../models/workspace");
 const userModel = require("../models/user");
 const { isObjectIdValid } = require("../helpers/mongoose");
-const { decodeJWT } = require("../helpers/jwt");
+const jwt = require("jsonwebtoken");
 const addIssue = async (data) => {
   try {
     const workspaceUrl = data.url;
@@ -106,7 +106,7 @@ const changeAssignee = async (data, token) => {
       data: null,
     };
   try {
-    const user = decodeJWT(token);
+    const user = jwt.decode(token);
     const email = user.email;
     if (!email) return { status: 400 };
     const userData = await userModel

@@ -4,6 +4,7 @@ const http = require("http");
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
 require("dotenv").config();
 app.use(
   cors({
@@ -35,8 +36,6 @@ app.use("/api/workspace", workspace);
 // app.use("/api/issue", issue);
 
 const SocketIoIssue = require("./socket.ioRoutes/issue");
-const { decodeJWT } = require("./helpers/jwt");
-const { type } = require("os");
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -51,8 +50,8 @@ mongoose
 io.use(SocketIoTokenAuth);
 let onlineUsers = [];
 io.on("connection", async (socket) => {
-  const user = decodeJWT(socket.handshake?.auth?.accessToken);
-  console.log(`${user.email} Connected`);
+  const user = jwt.decode(socket.handshake?.auth?.accessToken);
+  console.log(`${user?.email} Connected`);
   socket.on("disconnect", () => {
     const disconnectUser = () => {
       let newArray = [...onlineUsers];

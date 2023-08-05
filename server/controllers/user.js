@@ -24,7 +24,7 @@ const register = async (req, res) => {
   let image = avatarGen({ name: email });
   if (req.body.image) {
     const imageUpload = await uploadImage(req.body.image);
-    image = imageUpload.url;
+    image = imageUpload.secure_url;
   }
   const user = new userModel({
     email,
@@ -106,7 +106,7 @@ const changeProfilePicture = async (req, res) => {
       const userData = await userModel.findOne({ email: email }).exec();
       if (!userData) return res.sendStatus(404);
       const imageUpload = await uploadImage(imageData);
-      const imageURL = imageUpload.url;
+      const imageURL = imageUpload.secure_url;
       if (!imageURL) return res.sendStatus(400);
       userData.image = imageURL;
       userData.save();
