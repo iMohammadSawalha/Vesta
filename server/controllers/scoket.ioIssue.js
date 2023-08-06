@@ -3,11 +3,31 @@ const workspaceModel = require("../models/workspace");
 const userModel = require("../models/user");
 const { isObjectIdValid } = require("../helpers/mongoose");
 const jwt = require("jsonwebtoken");
+const { isString, hasOtherKeys, isNumber } = require("../helpers/functions");
+const allowedIssueKeys = [
+  "id",
+  "title",
+  "description",
+  "parent",
+  "assignee",
+  "status",
+];
 const addIssue = async (data) => {
   try {
     const workspaceUrl = data.url;
     const newIssue = data.issue;
     if (!newIssue || !newIssue.id || !newIssue.title || !newIssue.status)
+      return 400;
+    if (!isString(workspaceUrl, newIssue.id, newIssue.title, newIssue.status))
+      return 400;
+    if (hasOtherKeys(newIssue, allowedIssueKeys)) return 400;
+    if (newIssue.description && !isString(newIssue.description)) return 400;
+    if (newIssue.parent && !isString(newIssue.parent)) return 400;
+    if (
+      newIssue.assignee &&
+      !isString(newIssue.assignee) &&
+      !isObjectIdValid(newIssue.assignee)
+    )
       return 400;
     const workspace = await workspaceModel
       .findOne({ url_id: workspaceUrl })
@@ -37,6 +57,8 @@ const moveIssue = async (data) => {
       !dColumn ||
       !isInteger.test(dIndex)
     )
+      return 400;
+    if (!isString(id, sColumn, dColumn) || !isNumber(sIndex, dIndex))
       return 400;
     const workspace = await workspaceModel
       .findOne({ url_id: workspaceUrl })
@@ -68,7 +90,18 @@ const editIssue = async (data) => {
     const workspaceUrl = data.url;
     const newIssue = data.issue;
     if (!newIssue || !newIssue.id) return 400;
-    if (newIssue.assignee) if (!isObjectIdValid(newIssue.assignee)) return 400;
+    if (!isString(workspaceUrl, newIssue.id)) return 400;
+    if (newIssue.title && !isString(newIssue.title)) return 400;
+    if (newIssue.status && !isString(newIssue.status)) return 400;
+    if (hasOtherKeys(newIssue, allowedIssueKeys)) return 400;
+    if (newIssue.description && !isString(newIssue.description)) return 400;
+    if (newIssue.parent && !isString(newIssue.parent)) return 400;
+    if (
+      newIssue.assignee &&
+      !isString(newIssue.assignee) &&
+      !isObjectIdValid(newIssue.assignee)
+    )
+      return 400;
     const workspace = await workspaceModel
       .findOne({ url_id: workspaceUrl })
       .exec();
@@ -126,7 +159,8 @@ const deleteIssue = async (data) => {
   try {
     const workspaceUrl = data.url;
     const id = data.id;
-    if (!id) return 400;
+    if (!id || !workspaceUrl) return 400;
+    if (!isString(id, workspaceUrl)) return 400;
     const workspace = await workspaceModel
       .findOne({ url_id: workspaceUrl })
       .exec();

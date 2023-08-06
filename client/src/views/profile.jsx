@@ -45,8 +45,12 @@ const Profile = () => {
         );
         member.user.image = response?.data?.image;
         newState.issues.forEach((issue) => {
-          if (issue.assignee.email === email) {
-            issue.assignee.image = response?.data?.image;
+          if (issue?.assignee?.email === email) {
+            const assignee = {
+              ...issue?.assignee,
+              image: response?.data?.image,
+            };
+            issue.assignee = assignee;
           }
         });
         return newState;

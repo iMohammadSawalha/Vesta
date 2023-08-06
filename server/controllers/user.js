@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { isEmail, isPassword } = require("../helpers/regex");
+const { isString } = require("../helpers/functions");
 const userModel = require("../models/user");
 const crypto = require("crypto");
 const {
@@ -12,13 +13,14 @@ const {
 const { getDefaultWorkspaceByEmailHelper } = require("./workspace");
 const avatarGen = require("../helpers/avatarUrlGen");
 const uploadImage = require("../api/cloudinary");
-
 const register = async (req, res) => {
   let email = req.body.email;
   const password = req.body.password;
-  if (!email || !isEmail.test(email)) return res.sendStatus(400);
+  if (!email || !password) return res.sendStatus(400);
+  if (!isString(email, password)) return res.sendStatus(400);
+  if (!isEmail.test(email) || !isPassword.test(password))
+    return res.sendStatus(400);
   email = email.toLowerCase();
-  if (!password || !isPassword.test(password)) return res.sendStatus(400);
   if (await findUserWithEmail(email)) return res.sendStatus(409);
   const salt = Number(process.env.PASSWORD_SALT_ROUNDS);
   const hashedPassword = await bcrypt.hash(password, salt);
@@ -46,6 +48,8 @@ const login = async (req, res) => {
   try {
     let email = req.body.email;
     const password = req.body.password;
+    if (!email || !password) return res.sendStatus(400);
+    if (!isString(email, password)) return res.sendStatus(400);
     if (!isEmail.test(email)) return res.sendStatus(400);
     email = email.toLowerCase();
     const userFound = await findUserWithEmail(email);
@@ -113,6 +117,7 @@ const changeProfilePicture = async (req, res) => {
   const token = authHeader && authHeader.split(" ")[1];
   const imageData = req.body.image;
   if (!imageData) return res.sendStatus(400);
+  if (!isString(imageData)) return res.sendStatus(400);
   try {
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (error, user) => {
       if (error) return res.sendStatus(403);

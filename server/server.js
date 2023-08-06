@@ -36,6 +36,7 @@ app.use("/api/workspace", workspace);
 // app.use("/api/issue", issue);
 
 const SocketIoIssue = require("./socket.ioRoutes/issue");
+const { isString } = require("./helpers/functions");
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -50,8 +51,6 @@ mongoose
 io.use(SocketIoTokenAuth);
 let onlineUsers = [];
 io.on("connection", async (socket) => {
-  const user = jwt.decode(socket.handshake?.auth?.accessToken);
-  console.log(`${user?.email} Connected`);
   socket.on("disconnect", () => {
     const disconnectUser = () => {
       let newArray = [...onlineUsers];
@@ -65,7 +64,14 @@ io.on("connection", async (socket) => {
     };
     disconnectUser();
   });
-
+  if (
+    !isString(socket.handshake?.auth?.accessToken, socket.handshake?.auth?.url)
+  ) {
+    socket.disconnect();
+    return;
+  }
+  const user = jwt.decode(socket.handshake?.auth?.accessToken);
+  console.log(`${user?.email} Connected`);
   const response = await workspaceAuthSocketIo(
     socket.handshake?.auth?.accessToken,
     socket.handshake?.auth?.url

@@ -1,11 +1,13 @@
 const jwt = require("jsonwebtoken");
 const workspaceModel = require("../models/workspace");
+const { isString } = require("../helpers/functions");
 const hasWrokspaceAccess = (req, res, next) => {
   try {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
     const workspaceUrl = req.body.url;
     if (!workspaceUrl) return res.sendStatus(400);
+    if (!isString(workspaceUrl)) return 400;
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (error, user) => {
       if (error) return res.sendStatus(403);
       const email = user.email;

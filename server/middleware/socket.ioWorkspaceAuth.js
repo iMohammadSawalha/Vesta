@@ -1,8 +1,10 @@
 const jwt = require("jsonwebtoken");
 const workspaceModel = require("../models/workspace");
+const { isString } = require("../helpers/functions");
 const workspaceAuthSocketIo = async (token, workspaceUrl) => {
   try {
     if (!workspaceUrl || !token) return 400;
+    if (!isString(workspaceUrl, token)) return 400;
     return jwt.verify(
       token,
       process.env.ACCESS_TOKEN_SECRET,

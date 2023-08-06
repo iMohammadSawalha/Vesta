@@ -2,14 +2,15 @@ const jwt = require("jsonwebtoken");
 const workspaceModel = require("../models/workspace");
 const userModel = require("../models/user");
 const avatarGen = require("../helpers/avatarUrlGen");
-const { isEmail } = require("../helpers/regex");
-
+const { isEmail, hasFirstTwoChars } = require("../helpers/regex");
+const { isString } = require("../helpers/functions");
 const getWorkspace = async (req, res) => {
   try {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
     const workspaceUrl = req.body.url;
     if (!workspaceUrl) return res.sendStatus(400);
+    if (!isString(workspaceUrl)) return res.sendStatus(400);
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (error, user) => {
       if (error) return res.sendStatus(403);
       const email = user.email;
@@ -46,8 +47,10 @@ const createWorkspace = async (req, res) => {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
     const { url, name } = req.body;
+    if (!url || !name) return res.sendStatus(400);
+    if (!isString(url, name)) return res.sendStatus(400);
+    if (!hasFirstTwoChars.test(name)) return res.sendStatus(400);
     const symbol = name?.slice(0, 2).toUpperCase();
-    if (!url || !name || !symbol) return res.sendStatus(400);
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (error, user) => {
       if (error) return res.sendStatus(403);
       const email = user.email;
@@ -112,6 +115,7 @@ const deleteWorkspace = async (req, res) => {
     const token = authHeader && authHeader.split(" ")[1];
     const { url } = req.body;
     if (!url) return res.sendStatus(400);
+    if (!isString(url)) return res.sendStatus(400);
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (error, user) => {
       if (error) return res.sendStatus(403);
       const workspaceData = await workspaceModel
@@ -167,9 +171,10 @@ const invite = async (req, res) => {
     const url = req.body.url;
     if (!email) return res.sendStatus(400);
     if (!url) return res.sendStatus(400);
+    if (!isString(email, url)) return res.sendStatus(400);
     if (!isEmail.test(email)) return res.sendStatus(400);
     const userData = await userModel.findOne({ email: email }).exec();
-    if (!userData) return res.sendStatus(400);
+    if (!userData) return res.sendStatus(404);
     const workspaceData = await workspaceModel
       .findOne({ url_id: url })
       .populate([{ path: "members.user", select: "email" }])
