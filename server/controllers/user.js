@@ -13,14 +13,55 @@ const {
 const { getDefaultWorkspaceByEmailHelper } = require("./workspace");
 const avatarGen = require("../helpers/avatarUrlGen");
 const uploadImage = require("../api/cloudinary");
+const { sendVerificationEmail } = require("./mail");
+const delay = 1000 * 60 * 5;
+const sentCodes = [];
+const verifiedEmails = [];
+const removeObjFromList = (list, email) => {
+  const index = list.findIndex((obj) => obj.email === email);
+  if (index > -1) list.splice(index, 1);
+};
+const removeValueFromList = (list, email) => {
+  const index = list.indexOf(email);
+  if (index > -1) list.splice(index, 1);
+};
+const sendCode = async (req, res) => {
+  const email = req.body.email;
+  if (!email && !isString(email) && !isEmail.test(email))
+    return res.sendStatus(400);
+  if (sentCodes.find((obj) => obj.email === email)) return res.sendStatus(401);
+  const code = Math.random().toString(36).slice(-5);
+  sendVerificationEmail(email, code);
+  const sentCodeObj = {
+    email,
+    code,
+  };
+  sentCodes.push(sentCodeObj);
+  setTimeout(removeObjFromList, delay, sentCodes, email);
+  res.sendStatus(200);
+};
+const verifyCode = async (email, code) => {
+  if (verifiedEmails.includes(email)) return true;
+  const sentCodeObj = sentCodes.find((obj) => {
+    if (obj?.email === email && obj?.code === code) return true;
+    return false;
+  });
+  if (sentCodeObj?.code !== code) return false;
+  verifiedEmails.push(email);
+  setTimeout(removeValueFromList, delay, verifiedEmails, email);
+  return true;
+};
 const register = async (req, res) => {
   let email = req.body.email;
   const password = req.body.password;
+  const code = req.body.code;
+  if (!code && !isString(code)) return res.sendStatus(400);
   if (!email || !password) return res.sendStatus(400);
   if (!isString(email, password)) return res.sendStatus(400);
   if (!isEmail.test(email) || !isPassword.test(password))
     return res.sendStatus(400);
   email = email.toLowerCase();
+  if (!(await verifyCode(email, code))) return res.sendStatus(403);
   if (await findUserWithEmail(email)) return res.sendStatus(409);
   const salt = Number(process.env.PASSWORD_SALT_ROUNDS);
   const hashedPassword = await bcrypt.hash(password, salt);
@@ -137,4 +178,11 @@ const changeProfilePicture = async (req, res) => {
   }
 };
 
-module.exports = { login, register, logout, changeProfilePicture };
+module.exports = {
+  login,
+  register,
+  logout,
+  changeProfilePicture,
+  sendCode,
+  verifyCode,
+};
