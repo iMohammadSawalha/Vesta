@@ -30,6 +30,7 @@ const IssueBigScreen = () => {
   const errorHandler = (error) => {
     console.log(error.message);
   };
+  const homeUrl = "/" + url;
   const saveIssueRequest = () => {
     try {
       socket.emit(
@@ -45,7 +46,7 @@ const IssueBigScreen = () => {
         },
         errorHandler
       );
-      navigate("/");
+      navigate(homeUrl);
     } catch (error) {
       //TODO ERROR MESSAGE HANDLE
       console.log(error);
@@ -94,7 +95,7 @@ const IssueBigScreen = () => {
           />
           <DeleteIssueModal />
           <div className="exit-big-screen-issue">
-            <Link to="/">
+            <Link to={homeUrl}>
               <button className="exit-add-issue-modal-button">
                 <Plus sx={{ transform: "rotate(45deg)" }} />
               </button>
