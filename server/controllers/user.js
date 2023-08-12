@@ -16,13 +16,8 @@ const uploadImage = require("../api/cloudinary");
 const { sendVerificationEmail } = require("./mail");
 const delay = 1000 * 60 * 5;
 const sentCodes = [];
-const verifiedEmails = [];
 const removeObjFromList = (list, email) => {
   const index = list.findIndex((obj) => obj.email === email);
-  if (index > -1) list.splice(index, 1);
-};
-const removeValueFromList = (list, email) => {
-  const index = list.indexOf(email);
   if (index > -1) list.splice(index, 1);
 };
 const sendCode = async (req, res) => {
@@ -41,14 +36,12 @@ const sendCode = async (req, res) => {
   res.sendStatus(200);
 };
 const verifyCode = async (email, code) => {
-  if (verifiedEmails.includes(email)) return true;
   const sentCodeObj = sentCodes.find((obj) => {
     if (obj?.email === email && obj?.code === code) return true;
     return false;
   });
   if (sentCodeObj?.code !== code) return false;
-  verifiedEmails.push(email);
-  setTimeout(removeValueFromList, delay, verifiedEmails, email);
+  removeObjFromList(sentCodes, email);
   return true;
 };
 const register = async (req, res) => {

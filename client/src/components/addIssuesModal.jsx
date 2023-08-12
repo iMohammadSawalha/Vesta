@@ -36,8 +36,8 @@ const AddIssueModal = ({
     console.log(error.message);
   };
   const addIssueRequest = () => {
+    const newStateId = issues.symbol + "-" + issues.id_counter;
     try {
-      const newStateId = issues.symbol + "-" + issues.id_counter;
       socket.emit(
         "add_issue",
         {

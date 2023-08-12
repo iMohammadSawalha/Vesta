@@ -15,7 +15,7 @@ const allowedIssueKeys = [
 const addIssue = async (data) => {
   try {
     const workspaceUrl = data.url;
-    const newIssue = data.issue;
+    let newIssue = data.issue;
     if (!newIssue || !newIssue.id || !newIssue.title || !newIssue.status)
       return 400;
     if (!isString(workspaceUrl, newIssue.id, newIssue.title, newIssue.status))
@@ -32,7 +32,14 @@ const addIssue = async (data) => {
     const workspace = await workspaceModel
       .findOne({ url_id: workspaceUrl })
       .exec();
-    if (workspace.issues.find((issue) => issue.id === newIssue.id)) return 409;
+    if (!workspace) return 400;
+    const newIssueId = workspace.symbol + "-" + workspace.id_counter;
+    if (newIssue.id !== newIssueId) return 400;
+    newIssue = {
+      ...newIssue,
+      id: newIssueId,
+    };
+    if (workspace.issues.find((issue) => issue.id === newIssueId)) return 409;
     workspace.issues.push(newIssue);
     const columnToUpdate = workspace.columns.find(
       (column) => column.id === newIssue.status
