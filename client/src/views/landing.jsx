@@ -1,6 +1,7 @@
-import StarsBackground from "../components/landingBackgroundStars";
+import Background from "../components/landingBackground";
 import "./landing.css";
 import "../components/buttons.css";
+import Spline from "@splinetool/react-spline";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { useEffect, useState } from "react";
@@ -16,7 +17,7 @@ const Landing = () => {
 
   if (!redirecting)
     return (
-      <StarsBackground>
+      <Background>
         <div className="landing-container">
           <div className="landing-navbar">
             <div className="landing-navbar-buttons">
@@ -37,14 +38,14 @@ const Landing = () => {
               </button>
             </div>
           </div>
-          <div className="landing-content">
-            <div className="landing-title">Vesta</div>
-            <div className="landing-subtitle">
-              What a better way to build products
-            </div>
+          <div className="spline-container">
+            <Spline
+              className="splineObject"
+              scene="https://prod.spline.design/z4WAks3qdqLhX0yD/scene.splinecode"
+            />
           </div>
         </div>
-      </StarsBackground>
+      </Background>
     );
 };
 export default Landing;

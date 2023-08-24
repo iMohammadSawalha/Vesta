@@ -24,6 +24,7 @@
   width: 100%;
 }
 .landing-navbar {
+  z-index: 5;
   display: flex;
   align-items: center;
   justify-content: end;
@@ -35,18 +36,15 @@
   gap: 1rem;
 }
 .landing-content {
+  z-index: 5;
   display: flex;
+  margin-top: auto;
+  margin-bottom: auto;
   flex-direction: column;
+  margin-left: auto;
+  margin-right: 5%;
   align-items: center;
   justify-content: center;
-  height: 60%;
-}
-.landing-title {
-  font-size: 4em;
-  font-weight: 600;
-}
-.landing-subtitle {
-  text-decoration: overline;
 }
 .workspace-not-found {
   display: flex;
@@ -61,4 +59,30 @@
   position: absolute;
   top: 5%;
   right: 5%;
+}
+.spline-container {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+@media screen and (max-width: 1200px) {
+  .splineObject {
+    transform: scale(0.8) translateX(-200px);
+  }
+}
+@media screen and (max-width: 800px) {
+  .splineObject {
+    transform: scale(0.6) translateX(-300px);
+  }
+}
+@media screen and (max-width: 600px) {
+  .splineObject {
+    transform: scale(0.4) translateX(-400px);
+  }
+}
+@media screen and (min-width: 1000px) and (max-height: 900px) {
+  .splineObject {
+    transform: scale(0.8) translateX(-200px);
+  }
 }
