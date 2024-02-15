@@ -42,12 +42,13 @@ app.use(cookieParser());
 // For CronJob
 app.post("/cron/trigger",(req, res)=>{
   const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
   if(!authHeader)
-    res.sendStatus(401)
+    return res.sendStatus(401)
+  const token = authHeader && authHeader.split(" ")[1];
+  console.log("Cron Triggered!, Token: ",token)
   if(token != "cron-token-id")
-    res.sendStatus(403);
-  res.sendStatus(200);
+    return res.sendStatus(403);
+  return res.sendStatus(200);
 
 })
 
