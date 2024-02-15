@@ -40,7 +40,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // For CronJob
-app.post("/api/cron/trigger",(req, res)=>{
+app.post("/cron/trigger",(req, res)=>{
   res.sendStatus(200);
 })
 
