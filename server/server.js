@@ -39,14 +39,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+// For CronJob
+app.post("/api/cron/trigger",(req, res)=>{
+  res.sendStatus(200);
+})
+
 app.use("/api/user", user);
 app.use("/api/workspace", workspace);
 // app.use("/api/issue", issue);
-
-// For CronJob
-app.post("/api/cron/trigger",(_, res)=>{
-  res.sendStatus(200);
-})
 
 const SocketIoIssue = require("./socket.ioRoutes/issue");
 const { isString } = require("./helpers/functions");
