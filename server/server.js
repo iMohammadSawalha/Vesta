@@ -1,15 +1,7 @@
 const express = require("express");
 const app = express();
-const https = require("https");
-const fs = require("fs");
-const path = require("path");
-const server = https.createServer(
-  {
-    key: fs.readFileSync(path.resolve("key.pem")),
-    cert: fs.readFileSync(path.resolve("cert.pem")),
-  },
-  app
-);
+const http = require("http");
+const server = http.createServer(app);
 const { Server } = require("socket.io");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
@@ -40,16 +32,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // For CronJob
-app.post("/cron/trigger",(req, res)=>{
-  const authHeader = req.headers["authorization"];
-  if(!authHeader)
-    return res.sendStatus(401)
-  const token = authHeader && authHeader.split(" ")[1];
-  console.log("Cron Triggered!, Token: ",token)
-  if(token != "cron-token-id")
-    return res.sendStatus(403);
-  return res.sendStatus(200);
-
+app.get("/",(req,res)=>{
+  res.status(200).send("Ok!")
 })
 
 app.use("/api/user", user);
